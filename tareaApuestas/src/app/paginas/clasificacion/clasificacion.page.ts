@@ -14,6 +14,8 @@ import { SoccerService } from '../../servicios/futbol';
 })
 export class ClasificacionComponent implements OnInit {
 
+  clasificacion: any[] = [];
+
   tabla: any[] = [];
   partidos: any[] = [];
   partidosPorJornada: Record<number, any[]> = {};
@@ -29,27 +31,26 @@ export class ClasificacionComponent implements OnInit {
   readonly jornadaMax = 38;
 
   escudos: Record<string, string> = {
-    alaves: 'assets/escudos/alaves.png',
-    almeria: 'assets/escudos/almeria.png',
-    athletic: 'assets/escudos/athletic.png',
-    atletico: 'assets/escudos/atletico.png',
-    betis: 'assets/escudos/betis.png',
-    cadiz: 'assets/escudos/cadiz.png',
-    celta: 'assets/escudos/celta.png',
-    barcelona: 'assets/escudos/fc_barcelona.png',
-    getafe: 'assets/escudos/getafe.png',
-    girona: 'assets/escudos/girona.png',
-    granada: 'assets/escudos/granada.png',
-    palmas: 'assets/escudos/las_palmas.png',
-    mallorca: 'assets/escudos/mallorca.png',
-    osasuna: 'assets/escudos/osasuna.png',
-    rayo: 'assets/escudos/rayo.png',
-    madrid: 'assets/escudos/real_madrid.png',
-    sociedad: 'assets/escudos/real_sociedad.png',
-    sevilla: 'assets/escudos/sevilla.png',
-    valencia: 'assets/escudos/valencia.png',
-    villarreal: 'assets/escudos/villarreal.png',
-    default: 'assets/icon/favicon.png'
+    alaves: 'assets/alaves.png',
+    almeria: 'assets/almeria.png',
+    athletic: 'assets/athletic.png',
+    atletico: 'assets/atletico.png',
+    betis: 'assets/betis.png',
+    cadiz: 'assets/cadiz.png',
+    celta: 'assets/celta.png',
+    barcelona: 'assets/fc_barcelona.png',
+    getafe: 'assets/getafe.png',
+    girona: 'assets/girona.png',
+    granada: 'assets/granada.png',
+    palmas: 'assets/las_palmas.png',
+    mallorca: 'assets/mallorca.png',
+    osasuna: 'assets/osasuna.png',
+    rayo: 'assets/rayo.png',
+    madrid: 'assets/real_madrid.png',
+    sociedad: 'assets/real_sociedad.png',
+    sevilla: 'assets/sevilla.png',
+    valencia: 'assets/valencia.png',
+    villarreal: 'assets/villarreal.png',
   };
 
   constructor(soccerService: SoccerService, authService: AuthService, router: Router) {
@@ -195,5 +196,9 @@ export class ClasificacionComponent implements OnInit {
 
   async irDetalle(idPartido: number) {
     this.router.navigate(['/match-detail', idPartido]);
+  }
+
+  obtenerEscudo(teamName: string): string {
+    return `assets/${teamName.toLowerCase().replace(/\s+/g, '_')}.png`;
   }
 }

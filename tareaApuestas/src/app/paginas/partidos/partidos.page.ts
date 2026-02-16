@@ -6,14 +6,12 @@ import { FormsModule } from '@angular/forms';
 import { AuthService } from '../../servicios/auth';
 import { SoccerService } from '../../servicios/futbol';
 
-import { SidebarComponent } from '../../componentes/sidebar/sidebar.component';
-
 @Component({
   selector: 'app-panel',
   templateUrl: './partidos.page.html',
   styleUrls: ['./partidos.page.scss'],
   standalone: true,
-  imports: [IonicModule, CommonModule, RouterModule, FormsModule, SidebarComponent]
+  imports: [IonicModule, CommonModule, RouterModule, FormsModule]
 })
 export class PartidosComponent implements OnInit, OnDestroy {
 
@@ -28,26 +26,26 @@ export class PartidosComponent implements OnInit, OnDestroy {
   refreshInterval: any;
 
   escudosPorEquipo: any = {
-    'deportivo alaves': 'assets/escudos/alaves.png',
-    'ud almeria': 'assets/escudos/almeria.png',
-    'athletic club': 'assets/escudos/athletic.png',
+    'deportivo alaves': 'assets/alaves.png',
+    'ud almeria': 'assets/almeria.png',
+    'athletic club': 'assets/athletic.png',
     'atletico madrid': 'assets/escudos/atletico.png',
-    'real betis': 'assets/escudos/betis.png',
-    'cadiz cf': 'assets/escudos/cadiz.png',
-    'celta de vigo': 'assets/escudos/celta.png',
-    'fc barcelona': 'assets/escudos/fc_barcelona.png',
-    'getafe cf': 'assets/escudos/getafe.png',
-    'girona fc': 'assets/escudos/girona.png',
-    'granada cf': 'assets/escudos/granada.png',
-    'ud las palmas': 'assets/escudos/las_palmas.png',
-    'rcd mallorca': 'assets/escudos/mallorca.png',
-    'osasuna': 'assets/escudos/osasuna.png',
-    'rayo vallecano': 'assets/escudos/rayo.png',
-    'real madrid': 'assets/escudos/real_madrid.png',
-    'real sociedad': 'assets/escudos/real_sociedad.png',
-    'sevilla fc': 'assets/escudos/sevilla.png',
-    'valencia cf': 'assets/escudos/valencia.png',
-    'villarreal': 'assets/escudos/villarreal.png'
+    'real betis': 'assets/betis.png',
+    'cadiz cf': 'assets/cadiz.png',
+    'celta de vigo': 'assets/celta.png',
+    'fc barcelona': 'assets/fc_barcelona.png',
+    'getafe cf': 'assets/getafe.png',
+    'girona fc': 'assets/egirona.png',
+    'granada cf': 'assets/granada.png',
+    'ud las palmas': 'assets/las_palmas.png',
+    'rcd mallorca': 'assets/mallorca.png',
+    'osasuna': 'assets/osasuna.png',
+    'rayo vallecano': 'assets/rayo.png',
+    'real madrid': 'assets/real_madrid.png',
+    'real sociedad': 'assets/real_sociedad.png',
+    'sevilla fc': 'assets/sevilla.png',
+    'valencia cf': 'assets/valencia.png',
+    'villarreal': 'assets/villarreal.png'
   };
 
   constructor(
@@ -102,7 +100,7 @@ export class PartidosComponent implements OnInit, OnDestroy {
     const key = nombre.toLowerCase()
       .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
       .trim();
-    return this.escudosPorEquipo[key] ?? 'assets/icon/favicon.png';
+    return this.escudosPorEquipo[key] ?? 'assets/';
   }
 
   async irDetalle(idPartido: number) {

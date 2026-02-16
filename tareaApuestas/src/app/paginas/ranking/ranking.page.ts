@@ -5,14 +5,13 @@ import { IonicModule } from '@ionic/angular';
 import { AuthService } from '../../servicios/auth';
 import { BetService } from '../../servicios/apuestas';
 
-import { SidebarComponent } from '../../componentes/sidebar/sidebar.component';
 
 @Component({
   selector: 'app-ranking',
   templateUrl: './ranking.page.html',
   styleUrls: ['./ranking.page.scss'],
   standalone: true,
-  imports: [IonicModule, CommonModule, RouterModule, SidebarComponent]
+  imports: [IonicModule, CommonModule, RouterModule]
 })
 export class RankingComponent implements OnInit {
 

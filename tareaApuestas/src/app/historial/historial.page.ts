@@ -7,8 +7,8 @@ import { BetService } from '../servicios/apuestas';
 
 @Component({
   selector: 'app-historial',
-  templateUrl: './historial.component.html',
-  styleUrls: ['./historial.component.scss'],
+  templateUrl: './historial.page.html', 
+  styleUrls: ['./historial.page.scss'],
   standalone: true,
   imports: [IonicModule, CommonModule, RouterModule]
 })
