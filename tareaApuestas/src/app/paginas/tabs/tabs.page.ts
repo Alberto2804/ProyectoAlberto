@@ -1,20 +1,25 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
-import { IonContent, IonHeader, IonTitle, IonToolbar } from '@ionic/angular/standalone';
+import { IonicModule } from '@ionic/angular';
+import { Router, RouterLink, RouterLinkActive } from '@angular/router';
+import { AuthService } from '../../servicios/auth';
 
 @Component({
   selector: 'app-tabs',
   templateUrl: './tabs.page.html',
   styleUrls: ['./tabs.page.scss'],
   standalone: true,
-  imports: [IonContent, IonHeader, IonTitle, IonToolbar, CommonModule, FormsModule]
+  imports: [IonicModule, CommonModule, RouterLink, RouterLinkActive]
 })
-export class TabsPage implements OnInit {
+export class TabsPage {
 
-  constructor() { }
+  constructor(
+    private authService: AuthService,
+    private router: Router
+  ) { }
 
-  ngOnInit() {
+  async cerrarSesion() {
+    await this.authService.logout();
+    this.router.navigate(['/login'], { replaceUrl: true });
   }
-
 }

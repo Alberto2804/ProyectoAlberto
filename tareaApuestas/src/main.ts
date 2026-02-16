@@ -7,7 +7,7 @@ import { routes } from './app/app.routes';
 import { AppComponent } from './app/app.component';
 
 
-import { AuthInterceptor } from './app/auth-interceptor';
+import { AuthInterceptor } from './app/guards/auth-interceptor';
 
 bootstrapApplication(AppComponent, {
   providers: [

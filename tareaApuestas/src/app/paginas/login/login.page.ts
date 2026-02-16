@@ -1,20 +1,58 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { IonContent, IonHeader, IonTitle, IonToolbar } from '@ionic/angular/standalone';
+import { IonicModule, ToastController } from '@ionic/angular';
+import { Router, RouterLink } from '@angular/router';
+import { AuthService } from '../../servicios/auth'; 
 
 @Component({
   selector: 'app-login',
   templateUrl: './login.page.html',
   styleUrls: ['./login.page.scss'],
   standalone: true,
-  imports: [IonContent, IonHeader, IonTitle, IonToolbar, CommonModule, FormsModule]
+  imports: [IonicModule, CommonModule, FormsModule, RouterLink]
 })
 export class LoginPage implements OnInit {
+  username = '';
+  password = '';
+  cargando = false;
 
-  constructor() { }
+  constructor(
+    private authService: AuthService,
+    private router: Router,
+    private toastController: ToastController
+  ) { }
 
-  ngOnInit() {
+  ngOnInit() {}
+
+  login() {
+    if (!this.username || !this.password) {
+      this.mostrarMensaje('Por favor, rellena todos los campos');
+      return;
+    }
+
+    this.cargando = true;
+    
+    this.authService.login({ username: this.username, password: this.password }).subscribe({
+      next: () => {
+        this.cargando = false;
+        this.router.navigate(['/tabs/partidos']);
+      },
+      error: (err) => {
+        this.cargando = false;
+        this.mostrarMensaje(err.error?.error || 'Usuario o contraseña incorrectos');
+      }
+    });
   }
 
+  async mostrarMensaje(mensaje: string) {
+    const toast = await this.toastController.create({
+      message: mensaje,
+      duration: 2500,
+      position: 'bottom',
+      color: 'danger',
+      icon: 'alert-circle-outline'
+    });
+    toast.present();
+  }
 }

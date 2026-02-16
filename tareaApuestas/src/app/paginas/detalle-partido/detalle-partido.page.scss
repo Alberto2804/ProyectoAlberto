@@ -1,0 +1,145 @@
+.loading-center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+}
+
+// --- MARCADOR SUPERIOR ---
+.match-hero {
+  background: linear-gradient(135deg, var(--ion-color-primary) 0%, #1e3a8a 100%);
+  color: white;
+  padding: 20px 15px 30px;
+  border-bottom-left-radius: 20px;
+  border-bottom-right-radius: 20px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+  margin-bottom: 20px;
+
+  .status-badge {
+    text-align: center;
+    margin-bottom: 15px;
+
+    .live-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      animation: pulse 2s infinite;
+    }
+
+    .pulse-dot {
+      width: 8px;
+      height: 8px;
+      background-color: white;
+      border-radius: 50%;
+    }
+  }
+
+  .scoreboard {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    .team {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 30%;
+
+      img {
+        width: 60px;
+        height: 60px;
+        object-fit: contain;
+        margin-bottom: 10px;
+        background: white;
+        border-radius: 50%;
+        padding: 5px;
+      }
+
+      span {
+        font-weight: 600;
+        font-size: 0.9rem;
+        text-align: center;
+        line-height: 1.2;
+      }
+    }
+
+    .score {
+      display: flex;
+      align-items: center;
+      font-size: 2.8rem;
+      font-weight: 900;
+      
+      .live-text { color: #ff4961; }
+      .divider { margin: 0 10px; font-weight: normal; opacity: 0.7; }
+    }
+  }
+}
+
+// --- ZONA APUESTAS ---
+.bet-section {
+  background: white;
+  margin: 0 15px 20px;
+  padding: 20px;
+  border-radius: 16px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+  text-align: center;
+
+  h3 {
+    margin: 0 0 15px;
+    font-weight: 700;
+    color: var(--ion-color-dark);
+    font-size: 1.1rem;
+  }
+
+  .bet-inputs {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 15px;
+
+    .score-input {
+      --background: #f4f5f8;
+      --border-radius: 8px;
+      --padding-start: 10px;
+      width: 70px;
+      font-size: 1.5rem;
+      font-weight: bold;
+      text-align: center;
+    }
+
+    .vs {
+      font-weight: bold;
+      color: var(--ion-color-medium);
+    }
+  }
+
+  .bet-btn {
+    --box-shadow: none;
+    font-weight: bold;
+  }
+}
+
+// --- ZONA BLOQUEADA (APUESTAS CERRADAS) ---
+.locked-section {
+  text-align: center;
+  padding: 40px 20px;
+  color: var(--ion-color-medium);
+
+  ion-icon {
+    font-size: 4rem;
+    opacity: 0.5;
+    margin-bottom: 10px;
+  }
+
+  p {
+    font-size: 1.1rem;
+    margin: 0;
+  }
+}
+
+@keyframes pulse {
+  0% { opacity: 1; }
+  50% { opacity: 0.5; }
+  100% { opacity: 1; }
+}

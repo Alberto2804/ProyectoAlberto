@@ -1,13 +1,76 @@
-<ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-title>detalle-equipo</ion-title>
+<ion-header class="ion-no-border">
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/tabs/clasificacion"></ion-back-button>
+    </ion-buttons>
+    <ion-title>{{ nombreEquipo }}</ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">detalle-equipo</ion-title>
-    </ion-toolbar>
-  </ion-header>
+<ion-content color="light">
+  
+  <div class="loading-center" *ngIf="cargando">
+    <ion-spinner name="crescent" color="primary"></ion-spinner>
+  </div>
+
+  <div *ngIf="!cargando && equipo">
+    
+    <div class="team-hero">
+      <img [src]="'assets/escudos/' + formatearEscudo(equipo.name) + '.png'" 
+           onerror="this.src='assets/icon/favicon.png'" class="team-shield">
+      <h2>{{ equipo.name }}</h2>
+      
+      <div class="team-stats-grid">
+        <div class="stat-box">
+          <span class="stat-value">{{ equipo.points }}</span>
+          <span class="stat-label">PTS</span>
+        </div>
+        <div class="stat-box">
+          <span class="stat-value">{{ equipo.played }}</span>
+          <span class="stat-label">PJ</span>
+        </div>
+        <div class="stat-box text-success">
+          <span class="stat-value">{{ equipo.won }}</span>
+          <span class="stat-label">V</span>
+        </div>
+        <div class="stat-box text-warning">
+          <span class="stat-value">{{ equipo.drawn }}</span>
+          <span class="stat-label">E</span>
+        </div>
+        <div class="stat-box text-danger">
+          <span class="stat-value">{{ equipo.lost }}</span>
+          <span class="stat-label">D</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="roster-section">
+      <h3><ion-icon name="people-outline"></ion-icon> Plantilla Oficial</h3>
+
+      <ion-list class="roster-list" lines="none">
+        <ion-item *ngFor="let jugador of jugadores" class="player-item">
+          
+          <ion-avatar slot="start" class="player-avatar">
+            <img [src]="'https://ui-avatars.com/api/?name=' + jugador.name + '&background=f4f5f8&color=333'" alt="avatar">
+          </ion-avatar>
+          
+          <ion-label>
+            <h2>{{ jugador.name }}</h2>
+            <p>Fuerza del equipo: {{ equipo.strength }}</p>
+          </ion-label>
+          
+          <div slot="end" class="goals-badge" *ngIf="jugador.goals > 0">
+            <ion-icon name="football"></ion-icon>
+            <span>{{ jugador.goals }}</span>
+          </div>
+
+        </ion-item>
+      </ion-list>
+
+      <div class="empty-roster" *ngIf="jugadores.length === 0">
+        <p>No hay datos de jugadores para este equipo.</p>
+      </div>
+    </div>
+
+  </div>
 </ion-content>

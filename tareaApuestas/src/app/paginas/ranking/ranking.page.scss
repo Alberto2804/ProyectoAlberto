@@ -1,0 +1,112 @@
+.loading-container, .empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 60vh;
+  color: var(--ion-color-medium);
+  
+  ion-spinner {
+    transform: scale(1.5);
+    margin-bottom: 15px;
+  }
+  
+  ion-icon {
+    font-size: 4rem;
+    opacity: 0.5;
+    margin-bottom: 10px;
+  }
+}
+
+.ranking-container {
+  padding: 16px;
+}
+
+.ranking-list {
+  background: transparent;
+}
+
+.ranking-item {
+  --background: #ffffff;
+  --border-radius: 16px;
+  --padding-start: 12px;
+  --padding-end: 16px;
+  margin-bottom: 12px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.04);
+  transition: transform 0.2s ease;
+
+  &:active {
+    transform: scale(0.98);
+  }
+
+  // Estilos especiales para el pódium
+  &.pos-1 {
+    --background: linear-gradient(135deg, #fffcf0 0%, #ffffff 100%);
+    border: 1px solid rgba(255, 215, 0, 0.4);
+  }
+  &.pos-2 {
+    --background: linear-gradient(135deg, #f8f9fb 0%, #ffffff 100%);
+  }
+  &.pos-3 {
+    --background: linear-gradient(135deg, #fff7ef 0%, #ffffff 100%);
+  }
+}
+
+.position-badge {
+  width: 35px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-weight: 800;
+  font-size: 1.2rem;
+  color: var(--ion-color-medium);
+
+  ion-icon {
+    font-size: 2rem;
+    &.gold { color: #ffd700; filter: drop-shadow(0 2px 4px rgba(255, 215, 0, 0.5)); }
+    &.silver { color: #c0c0c0; }
+    &.bronze { color: #cd7f32; }
+  }
+}
+
+.user-avatar {
+  width: 45px;
+  height: 45px;
+  margin-right: 15px;
+  border: 2px solid white;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+
+.username {
+  font-weight: 700;
+  font-size: 1.1rem;
+  color: var(--ion-color-dark);
+}
+
+.tipster-title {
+  color: #e5c100;
+  font-weight: 600;
+  font-size: 0.8rem;
+  margin-top: 3px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.points-container {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+
+  .points {
+    font-weight: 900;
+    font-size: 1.4rem;
+    color: var(--ion-color-primary);
+  }
+
+  .pts-label {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--ion-color-medium);
+    text-transform: uppercase;
+  }
+}
