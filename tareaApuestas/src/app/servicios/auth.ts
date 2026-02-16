@@ -1,102 +1,85 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
-import { BehaviorSubject, Observable, throwError } from 'rxjs';
-import { tap, catchError } from 'rxjs/operators';
+import { BehaviorSubject } from 'rxjs';
+import { tap } from 'rxjs/operators';
 import { Preferences } from '@capacitor/preferences';
-
-
-import { User, AuthResponse } from '../modelos/interfaces'; 
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
 
-  private readonly API_URL = environment.apiUrl;
-  
-  private authSubject = new BehaviorSubject<boolean>(false);
-  
- 
-  private usuarioActual: User | null = null; 
+  apiUrl = environment.apiUrl;
+
+  private estaLogueado = new BehaviorSubject<boolean>(false);
+  public usuarioActual: any = null;
 
   constructor(private http: HttpClient) {
     this.cargarSesion();
   }
 
-  
-  private async cargarSesion(): Promise<void> {
-    const { value: token } = await Preferences.get({ key: 'token' });
-    const { value: userJson } = await Preferences.get({ key: 'user' });
+  async cargarSesion() {
+    const token = await Preferences.get({ key: 'token' });
+    const user = await Preferences.get({ key: 'user' });
 
-    if (token && userJson) {
-      this.usuarioActual = JSON.parse(userJson) as User;
-      this.authSubject.next(true);
+    if (token.value) {
+      this.usuarioActual = user.value ? JSON.parse(user.value) : null;
+      this.estaLogueado.next(true);
     } else {
-      this.authSubject.next(false);
+      this.estaLogueado.next(false);
     }
   }
 
- 
-  login(credenciales: { email: string; password: string }): Observable<AuthResponse> {
-    return this.http.post<AuthResponse>(`${this.API_URL}/login`, credenciales).pipe(
-      tap(async (res) => {
-        if (res.token && res.user) {
-          await this.guardarDatosSesion(res.token, res.user);
+  login(credenciales: any) {
+    return this.http.post(`${this.apiUrl}/login`, credenciales).pipe(
+      tap(async (res: any) => {
+        if (res.token) {
+          await Preferences.set({ key: 'token', value: res.token });
+          await Preferences.set({ key: 'user', value: JSON.stringify(res.user) });
+
+          this.usuarioActual = res.user;
+          this.estaLogueado.next(true);
         }
-      }),
-      catchError(this.handleError)
+      })
     );
   }
 
-  
-  register(datos: any): Observable<AuthResponse> {
-    return this.http.post<AuthResponse>(`${this.API_URL}/register`, datos).pipe(
-      tap(async (res) => {
-        if (res.token && res.user) {
-          await this.guardarDatosSesion(res.token, res.user);
+  register(datos: any) {
+    return this.http.post(`${this.apiUrl}/register`, datos).pipe(
+      tap(async (res: any) => {
+        if (res.token) {
+          await Preferences.set({ key: 'token', value: res.token });
+          await Preferences.set({ key: 'user', value: JSON.stringify(res.user) });
+
+          this.usuarioActual = res.user;
+          this.estaLogueado.next(true);
         }
-      }),
-      catchError(this.handleError)
+      })
     );
   }
 
-  
-  private async guardarDatosSesion(token: string, user: User): Promise<void> {
-    await Preferences.set({ key: 'token', value: token });
-    await Preferences.set({ key: 'user', value: JSON.stringify(user) });
-    
-    this.usuarioActual = user;
-    this.authSubject.next(true);
-  }
+  async logout() {
+    await Preferences.remove({ key: 'token' });
+    await Preferences.remove({ key: 'user' });
 
- 
-  async logout(): Promise<void> {
-    await Preferences.clear();
     this.usuarioActual = null;
-    this.authSubject.next(false);
+    this.estaLogueado.next(false);
   }
 
-  
-  get isLoggedIn$(): Observable<boolean> {
-    return this.authSubject.asObservable();
+  isLoggedIn() {
+    return this.estaLogueado.asObservable();
   }
 
- 
-  get currentUser(): User | null {
-    return this.usuarioActual;
+  async getUser() {
+    if (this.usuarioActual) return this.usuarioActual;
+
+    const user = await Preferences.get({ key: 'user' });
+    return user.value ? JSON.parse(user.value) : null;
   }
 
-
-  async getToken(): Promise<string | null> {
-    const { value } = await Preferences.get({ key: 'token' });
-    return value;
-  }
-
-  
-  private handleError(error: any) {
-    console.error('Error de Autenticación:', error);
-    const mensaje = error.error?.message || 'Ha ocurrido un error inesperado. Inténtalo de nuevo.';
-    return throwError(() => new Error(mensaje));
+  async getToken() {
+    const token = await Preferences.get({ key: 'token' });
+    return token.value;
   }
 }

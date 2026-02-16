@@ -7,8 +7,8 @@ import { BetService } from '../../servicios/apuestas';
 
 @Component({
   selector: 'app-ranking',
-  templateUrl: './ranking.component.html',
-  styleUrls: ['./ranking.component.scss'],
+  templateUrl: './ranking.page.html',
+  styleUrls: ['./ranking.page.scss'],
   standalone: true,
   imports: [IonicModule, CommonModule, RouterModule]
 })

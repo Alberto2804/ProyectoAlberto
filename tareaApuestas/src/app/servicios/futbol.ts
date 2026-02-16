@@ -3,8 +3,8 @@ import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
+import { firstValueFrom } from 'rxjs'
 
-// Importamos las interfaces necesarias
 import { Match, Standing, User, Player } from '../modelos/interfaces';
 
 @Injectable({
@@ -12,64 +12,79 @@ import { Match, Standing, User, Player } from '../modelos/interfaces';
 })
 export class SoccerService {
 
-  private readonly API_URL = environment.apiUrl;
+   private apiUrl = environment.apiUrl;
+  public partidosMemoria: any[] = [];
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) {}
 
-  /**
-   * Obtiene los partidos de la jornada actual.
-   * Endpoint: GET /api/matches
-   * Ideal para la pantalla principal (Dashboard).
-   * @returns Observable con un array de partidos
-   */
-  getMatches(): Observable<Match[]> {
-    return this.http.get<Match[]>(`${this.API_URL}/matches`).pipe(
-      catchError(this.handleError)
+async getPartidos() {
+  try {
+    const res: any = await firstValueFrom(
+      this.http.get(`${this.apiUrl}/matches?t=${Date.now()}`)
     );
+
+    return Array.isArray(res) ? res : res?.data ?? [];
+  } catch (error) {
+    return [];
+  }
+}
+
+
+  async getMatch(id: number) {
+    try {
+      const match: any = await firstValueFrom(
+        this.http.get(`${this.apiUrl}/matches/${id}`)
+      );
+
+      const index = this.partidosMemoria.findIndex(p => p.id == id);
+
+      if (index !== -1) {
+        this.partidosMemoria[index] = match;
+      } else {
+        this.partidosMemoria.push(match);
+      }
+
+      return match;
+
+    } catch (error) {
+      return null;
+    }
   }
 
-  /**
-   * Obtiene la tabla de clasificación de La Liga.
-   * Endpoint: GET /api/league/standings
-   * @returns Observable con un array de las posiciones de los equipos
-   */
-  getStandings(): Observable<Standing[]> {
-    return this.http.get<Standing[]>(`${this.API_URL}/league/standings`).pipe(
-      catchError(this.handleError)
-    );
+  getMatchLocal(id: number) {
+    return this.partidosMemoria.find(p => p.id == id);
   }
 
-  /**
-   * Obtiene el ranking global de usuarios (Tipsters).
-   * Endpoint: GET /api/leaderboard
-   * @returns Observable con un array de usuarios ordenados por puntos
-   */
-  getLeaderboard(): Observable<User[]> {
-    return this.http.get<User[]>(`${this.API_URL}/leaderboard`).pipe(
-      catchError(this.handleError)
-    );
+  async getStandings() {
+    try {
+      const res: any = await firstValueFrom(
+        this.http.get(`${this.apiUrl}/league/standings`)
+      );
+      return Array.isArray(res) ? res : [];
+    } catch (error) {
+      return [];
+    }
   }
 
-  /**
-   * Obtiene la plantilla completa de jugadores de un equipo específico.
-   * Endpoint: GET /api/teams/:name/players
-   * @param teamName Nombre del equipo (ej. "Real Madrid")
-   * @returns Observable con un array de jugadores
-   */
-  getTeamPlayers(teamName: string): Observable<Player[]> {
-    return this.http.get<Player[]>(`${this.API_URL}/teams/${teamName}/players`).pipe(
-      catchError(this.handleError)
-    );
+  async getPlayers(teamName: string) {
+    try {
+      const res: any = await firstValueFrom(
+        this.http.get(`${this.apiUrl}/teams/${teamName}/players`)
+      );
+      return Array.isArray(res) ? res : [];
+    } catch (error) {
+      return [];
+    }
   }
 
-  /**
-   * Manejo centralizado de errores para el servicio de fútbol.
-   */
-  private handleError(error: any) {
-    console.error('Error en SoccerService:', error);
-    
-    // Extraemos el mensaje del backend si existe, o ponemos uno genérico
-    const mensaje = error.error?.message || 'Error al conectar con los datos de la liga.';
-    return throwError(() => new Error(mensaje));
+  async getResultadosJornada(jornada: number) {
+    try {
+      const res: any = await firstValueFrom(
+        this.http.get(`${this.apiUrl}/league/results/${jornada}`)
+      );
+      return Array.isArray(res) ? res : [];
+    } catch (error) {
+      return [];
+    }
   }
 }

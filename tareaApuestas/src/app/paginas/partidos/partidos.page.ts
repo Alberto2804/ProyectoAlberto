@@ -8,12 +8,12 @@ import { SoccerService } from '../../servicios/futbol';
 
 @Component({
   selector: 'app-panel',
-  templateUrl: './panel.component.html',
-  styleUrls: ['./panel.component.scss'],
+  templateUrl: './partidos.page.html',
+  styleUrls: ['./partidos.page.scss'],
   standalone: true,
   imports: [IonicModule, CommonModule, RouterModule, FormsModule]
 })
-export class PanelComponent implements OnInit, OnDestroy {
+export class PartidosComponent implements OnInit, OnDestroy {
 
   nombreUsuario = 'Usuario';
   avatarUsuario = '';

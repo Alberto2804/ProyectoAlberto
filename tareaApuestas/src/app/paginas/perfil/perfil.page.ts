@@ -8,8 +8,8 @@ import { AuthService } from '../../servicios/auth';
 
 @Component({
   selector: 'app-perfil',
-  templateUrl: './perfil.component.html',
-  styleUrls: ['./perfil.component.scss'],
+  templateUrl: './perfil.page.html',
+  styleUrls: ['./perfil.page.scss'],
   standalone: true,
   imports: [IonicModule, CommonModule, RouterModule, FormsModule]
 })
