@@ -1,0 +1,7 @@
+{
+  "name": "tareaApuestas",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular-standalone"
+}
