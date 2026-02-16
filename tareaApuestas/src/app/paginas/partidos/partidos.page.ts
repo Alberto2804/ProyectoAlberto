@@ -6,12 +6,14 @@ import { FormsModule } from '@angular/forms';
 import { AuthService } from '../../servicios/auth';
 import { SoccerService } from '../../servicios/futbol';
 
+import { SidebarComponent } from '../../componentes/sidebar/sidebar.component';
+
 @Component({
   selector: 'app-panel',
   templateUrl: './partidos.page.html',
   styleUrls: ['./partidos.page.scss'],
   standalone: true,
-  imports: [IonicModule, CommonModule, RouterModule, FormsModule]
+  imports: [IonicModule, CommonModule, RouterModule, FormsModule, SidebarComponent]
 })
 export class PartidosComponent implements OnInit, OnDestroy {
 
@@ -26,26 +28,26 @@ export class PartidosComponent implements OnInit, OnDestroy {
   refreshInterval: any;
 
   escudosPorEquipo: any = {
-    'deportivo alaves':  'assets/escudos/alaves.png',
-    'ud almeria':        'assets/escudos/almeria.png',
-    'athletic club':     'assets/escudos/athletic.png',
-    'atletico madrid':   'assets/escudos/atletico.png',
-    'real betis':        'assets/escudos/betis.png',
-    'cadiz cf':          'assets/escudos/cadiz.png',
-    'celta de vigo':     'assets/escudos/celta.png',
-    'fc barcelona':      'assets/escudos/fc_barcelona.png',
-    'getafe cf':         'assets/escudos/getafe.png',
-    'girona fc':         'assets/escudos/girona.png',
-    'granada cf':        'assets/escudos/granada.png',
-    'ud las palmas':     'assets/escudos/las_palmas.png',
-    'rcd mallorca':      'assets/escudos/mallorca.png',
-    'osasuna':           'assets/escudos/osasuna.png',
-    'rayo vallecano':    'assets/escudos/rayo.png',
-    'real madrid':       'assets/escudos/real_madrid.png',
-    'real sociedad':     'assets/escudos/real_sociedad.png',
-    'sevilla fc':        'assets/escudos/sevilla.png',
-    'valencia cf':       'assets/escudos/valencia.png',
-    'villarreal':        'assets/escudos/villarreal.png'
+    'deportivo alaves': 'assets/escudos/alaves.png',
+    'ud almeria': 'assets/escudos/almeria.png',
+    'athletic club': 'assets/escudos/athletic.png',
+    'atletico madrid': 'assets/escudos/atletico.png',
+    'real betis': 'assets/escudos/betis.png',
+    'cadiz cf': 'assets/escudos/cadiz.png',
+    'celta de vigo': 'assets/escudos/celta.png',
+    'fc barcelona': 'assets/escudos/fc_barcelona.png',
+    'getafe cf': 'assets/escudos/getafe.png',
+    'girona fc': 'assets/escudos/girona.png',
+    'granada cf': 'assets/escudos/granada.png',
+    'ud las palmas': 'assets/escudos/las_palmas.png',
+    'rcd mallorca': 'assets/escudos/mallorca.png',
+    'osasuna': 'assets/escudos/osasuna.png',
+    'rayo vallecano': 'assets/escudos/rayo.png',
+    'real madrid': 'assets/escudos/real_madrid.png',
+    'real sociedad': 'assets/escudos/real_sociedad.png',
+    'sevilla fc': 'assets/escudos/sevilla.png',
+    'valencia cf': 'assets/escudos/valencia.png',
+    'villarreal': 'assets/escudos/villarreal.png'
   };
 
   constructor(
@@ -53,7 +55,7 @@ export class PartidosComponent implements OnInit, OnDestroy {
     private soccerService: SoccerService,
     private router: Router,
     private ngZone: NgZone
-  ) {}
+  ) { }
 
   async ngOnInit() {
     this.actualizarHora();
@@ -92,7 +94,7 @@ export class PartidosComponent implements OnInit, OnDestroy {
 
   traducirEstado(estado: string): string {
     if (estado === 'pending') return 'Próximo';
-    if (estado === 'live')    return 'En Vivo';
+    if (estado === 'live') return 'En Vivo';
     return 'Final';
   }
 

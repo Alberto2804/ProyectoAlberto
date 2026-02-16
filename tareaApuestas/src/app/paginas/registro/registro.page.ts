@@ -7,13 +7,13 @@ import { AuthService } from '../../servicios/auth';
 
 @Component({
   selector: 'app-register',
-  templateUrl: './register.page.html',
-  styleUrls: ['./register.page.scss'],
+  templateUrl: './registro.page.html',
+  styleUrls: ['./registro.page.scss'],
   standalone: true,
   imports: [IonicModule, CommonModule, FormsModule, RouterModule]
 })
 export class RegisterComponent {
-  
+
 
   datos = {
     username: '',
@@ -23,14 +23,14 @@ export class RegisterComponent {
   };
 
   constructor(
-    private authService: AuthService, 
-    private router: Router, 
+    private authService: AuthService,
+    private router: Router,
     private toastCtrl: ToastController,
     private loadingCtrl: LoadingController
-  ) {}
+  ) { }
 
   async registrarse() {
-    
+
     if (!this.datos.username || !this.datos.email || !this.datos.password) {
       this.mostrarToast('Rellena todos los campos, anda');
       return;
@@ -44,7 +44,7 @@ export class RegisterComponent {
     this.authService.register(this.datos).subscribe({
       next: (res) => {
         loading.dismiss();
-        this.router.navigate(['/tabs/partidos']);
+        this.router.navigate(['/panel']);
       },
       error: (err) => {
         loading.dismiss();

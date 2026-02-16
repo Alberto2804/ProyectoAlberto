@@ -9,8 +9,8 @@ import { BetService } from '../../servicios/apuestas';
 
 @Component({
   selector: 'app-match-detail',
-  templateUrl: './match-detail.component.html',
-  styleUrls: ['./match-detail.component.scss'],
+  templateUrl: './detalle-partido.page.html',
+  styleUrls: ['./detalle-partido.page.scss'],
   standalone: true,
   imports: [IonicModule, CommonModule, FormsModule, RouterModule]
 })
@@ -28,27 +28,27 @@ export class MatchDetailComponent implements OnInit, OnDestroy {
   enviandoApuesta = false;
 
   escudos: any = {
-    alaves:     'assets/escudos/alaves.png',
-    almeria:    'assets/escudos/almeria.png',
-    athletic:   'assets/escudos/athletic.png',
-    atletico:   'assets/escudos/atletico.png',
-    betis:      'assets/escudos/betis.png',
-    cadiz:      'assets/escudos/cadiz.png',
-    celta:      'assets/escudos/celta.png',
-    barcelona:  'assets/escudos/fc_barcelona.png',
-    getafe:     'assets/escudos/getafe.png',
-    girona:     'assets/escudos/girona.png',
-    granada:    'assets/escudos/granada.png',
-    palmas:     'assets/escudos/las_palmas.png',
-    mallorca:   'assets/escudos/mallorca.png',
-    osasuna:    'assets/escudos/osasuna.png',
-    rayo:       'assets/escudos/rayo.png',
-    madrid:     'assets/escudos/real_madrid.png',
-    sociedad:   'assets/escudos/real_sociedad.png',
-    sevilla:    'assets/escudos/sevilla.png',
-    valencia:   'assets/escudos/valencia.png',
+    alaves: 'assets/escudos/alaves.png',
+    almeria: 'assets/escudos/almeria.png',
+    athletic: 'assets/escudos/athletic.png',
+    atletico: 'assets/escudos/atletico.png',
+    betis: 'assets/escudos/betis.png',
+    cadiz: 'assets/escudos/cadiz.png',
+    celta: 'assets/escudos/celta.png',
+    barcelona: 'assets/escudos/fc_barcelona.png',
+    getafe: 'assets/escudos/getafe.png',
+    girona: 'assets/escudos/girona.png',
+    granada: 'assets/escudos/granada.png',
+    palmas: 'assets/escudos/las_palmas.png',
+    mallorca: 'assets/escudos/mallorca.png',
+    osasuna: 'assets/escudos/osasuna.png',
+    rayo: 'assets/escudos/rayo.png',
+    madrid: 'assets/escudos/real_madrid.png',
+    sociedad: 'assets/escudos/real_sociedad.png',
+    sevilla: 'assets/escudos/sevilla.png',
+    valencia: 'assets/escudos/valencia.png',
     villarreal: 'assets/escudos/villarreal.png',
-    default:    'assets/icon/favicon.png'
+    default: 'assets/icon/favicon.png'
   };
 
   constructor(
@@ -58,7 +58,7 @@ export class MatchDetailComponent implements OnInit, OnDestroy {
     private authService: AuthService,
     private betService: BetService,
     private toastCtrl: ToastController
-  ) {}
+  ) { }
 
   async ngOnInit() {
     await this.cargarUsuario();
@@ -118,25 +118,25 @@ export class MatchDetailComponent implements OnInit, OnDestroy {
   claveEquipo(nombre: string): string {
     const n = nombre.toLowerCase()
       .normalize('NFD').replace(/[\u0300-\u036f]/g, '');
-    if (n.includes('alaves'))     return 'alaves';
-    if (n.includes('almeria'))    return 'almeria';
-    if (n.includes('athletic'))   return 'athletic';
-    if (n.includes('atletico'))   return 'atletico';
-    if (n.includes('betis'))      return 'betis';
-    if (n.includes('cadiz'))      return 'cadiz';
-    if (n.includes('celta'))      return 'celta';
-    if (n.includes('barcelona'))  return 'barcelona';
-    if (n.includes('getafe'))     return 'getafe';
-    if (n.includes('girona'))     return 'girona';
-    if (n.includes('granada'))    return 'granada';
-    if (n.includes('palmas'))     return 'palmas';
-    if (n.includes('mallorca'))   return 'mallorca';
-    if (n.includes('osasuna'))    return 'osasuna';
-    if (n.includes('rayo'))       return 'rayo';
-    if (n.includes('madrid'))     return 'madrid';
-    if (n.includes('sociedad'))   return 'sociedad';
-    if (n.includes('sevilla'))    return 'sevilla';
-    if (n.includes('valencia'))   return 'valencia';
+    if (n.includes('alaves')) return 'alaves';
+    if (n.includes('almeria')) return 'almeria';
+    if (n.includes('athletic')) return 'athletic';
+    if (n.includes('atletico')) return 'atletico';
+    if (n.includes('betis')) return 'betis';
+    if (n.includes('cadiz')) return 'cadiz';
+    if (n.includes('celta')) return 'celta';
+    if (n.includes('barcelona')) return 'barcelona';
+    if (n.includes('getafe')) return 'getafe';
+    if (n.includes('girona')) return 'girona';
+    if (n.includes('granada')) return 'granada';
+    if (n.includes('palmas')) return 'palmas';
+    if (n.includes('mallorca')) return 'mallorca';
+    if (n.includes('osasuna')) return 'osasuna';
+    if (n.includes('rayo')) return 'rayo';
+    if (n.includes('madrid')) return 'madrid';
+    if (n.includes('sociedad')) return 'sociedad';
+    if (n.includes('sevilla')) return 'sevilla';
+    if (n.includes('valencia')) return 'valencia';
     if (n.includes('villarreal')) return 'villarreal';
     return 'default';
   }

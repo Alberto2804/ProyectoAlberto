@@ -1,60 +1,49 @@
-<ion-content class="ion-padding">
-  <div class="login-container">
+<ion-content class="contenido-pantalla">
+  <div class="contenedor-registro">
     
-    <div class="header-section">
-      <ion-icon name="person-add-outline" class="logo-icon" color="primary"></ion-icon>
-      <h1>NUEVO FICHAJE</h1>
-      <p>Únete a la liga de los pronósticos</p>
-    </div>
+    <section class="lado-imagen">
+      <img src="assets/imgs/fotoregister.png" alt="Fondo fútbol" />
+      <div class="texto-sobre-imagen">
+        <h2>Únete al Juego</h2>
+        <p>Crea tu cuenta y empieza a ganar.</p>
+      </div>
+    </section>
 
-    <div class="form-section">
-      
-      <ion-item class="input-item" lines="none">
-        <ion-icon name="person-outline" slot="start" color="medium"></ion-icon>
-        <ion-input 
-          [(ngModel)]="username" 
-          type="text" 
-          placeholder="Nombre de usuario"
-          required>
-        </ion-input>
-      </ion-item>
+    <section class="lado-formulario">
+      <ion-card class="tarjeta-registro">
+        <ion-card-header>
+          <ion-card-title>Crear Cuenta</ion-card-title>
+          <ion-card-subtitle>Es rápido y gratis</ion-card-subtitle>
+        </ion-card-header>
 
-      <ion-item class="input-item" lines="none">
-        <ion-icon name="lock-closed-outline" slot="start" color="medium"></ion-icon>
-        <ion-input 
-          [(ngModel)]="password" 
-          type="password" 
-          placeholder="Crea una contraseña"
-          required>
-        </ion-input>
-      </ion-item>
+        <ion-card-content>
+          
+          <ion-item lines="none" class="campo-entrada">
+            <ion-label position="stacked">Usuario</ion-label>
+            <ion-input [(ngModel)]="credenciales.usuario" type="text" placeholder="Nick de jugador"></ion-input>
+          </ion-item>
 
-      <ion-item class="input-item" lines="none">
-        <ion-icon name="shield-checkmark-outline" slot="start" color="medium"></ion-icon>
-        <ion-input 
-          [(ngModel)]="confirmPassword" 
-          type="password" 
-          placeholder="Repite la contraseña"
-          required>
-        </ion-input>
-      </ion-item>
+          <ion-item lines="none" class="campo-entrada">
+            <ion-label position="stacked">Correo</ion-label>
+            <ion-input [(ngModel)]="credenciales.email" type="email" placeholder="correo@ejemplo.com"></ion-input>
+          </ion-item>
 
-      <ion-button 
-        expand="block" 
-        shape="round" 
-        class="ion-margin-top login-btn"
-        (click)="registrar()"
-        [disabled]="cargando">
-        <ion-spinner name="crescent" *ngIf="cargando"></ion-spinner>
-        <span *ngIf="!cargando">Crear Cuenta</span>
-      </ion-button>
-    </div>
+          <ion-item lines="none" class="campo-entrada">
+            <ion-label position="stacked">Contraseña</ion-label>
+            <ion-input [(ngModel)]="credenciales.password" type="password" placeholder="********"></ion-input>
+          </ion-item>
 
-    <div class="footer-section">
-      <p>¿Ya tienes equipo? <br>
-        <a routerLink="/login">Vuelve a iniciar sesión aquí</a>
-      </p>
-    </div>
+          <ion-button expand="block" class="boton-verde" (click)="registrarse()">
+            Registrarme
+          </ion-button>
+
+          <p class="texto-pie">
+            ¿Ya tienes cuenta? <a routerLink="/login">Inicia sesión</a>
+          </p>
+          
+        </ion-card-content>
+      </ion-card>
+    </section>
 
   </div>
 </ion-content>

@@ -1,26 +1,26 @@
 import { Routes } from '@angular/router';
+import { LoginComponent } from './paginas/login/login.page';
+import { RegisterComponent } from './paginas/registro/registro.page';
+import { PartidosComponent } from './paginas/partidos/partidos.page';
+import { ClasificacionComponent } from './paginas/clasificacion/clasificacion.page';
+import { MatchDetailComponent } from './paginas/detalle-partido/detalle-partido.page';
+import { TeamDetailComponent } from './paginas/detalle-equipo/detalle-equipo.page';
+import { RankingComponent } from './paginas/ranking/ranking.page';
+import { HistorialComponent } from './historial/historial.page';
+import { PerfilComponent } from './paginas/perfil/perfil.page';
 import { AuthGuard } from './guards/auth-guard';
 
+
 export const routes: Routes = [
-  { path: '', redirectTo: 'login', pathMatch: 'full' },
-  { path: 'login', loadComponent: () => import('./paginas/login/login.page').then(m => m.LoginPage) },
-  { path: 'registro', loadComponent: () => import('./paginas/registro/registro.page').then(m => m.RegistroPage) },
-  {
-    path: 'app',
-    loadComponent: () => import('./paginas/tabs/tabs.page').then(m => m.TabsPage),
-    canActivate: [AuthGuard],
-    children: [
-      { path: 'partidos', loadComponent: () => import('./paginas/partidos/partidos.page').then(m => m.PartidosPage) },
-      { path: 'liga', loadComponent: () => import('./paginas/clasificacion/clasificacion.page').then(m => m.ClasificacionPage) },
-      { path: 'ranking', loadComponent: () => import('./paginas/ranking/ranking.page').then(m => m.RankingPage) },
-      { path: 'perfil', loadComponent: () => import('./paginas/perfil/perfil.page').then(m => m.PerfilPage) },
-      { path: '', redirectTo: 'partidos', pathMatch: 'full' }
-    ]
-  },
-  { path: 'detalle-partido/:id', loadComponent: () => import('./paginas/detalle-partido/detalle-partido.page').then(m => m.DetallePartidoPage), canActivate: [authGuard] },
-  { path: 'detalle-equipo/:nombre', loadComponent: () => import('./paginas/detalle-equipo/detalle-equipo.page').then(m => m.DetalleEquipoPage), canActivate: [authGuard] },
-  {
-    path: 'historial',
-    loadComponent: () => import('./historial/historial.page').then( m => m.HistorialPage)
-  }
+    {path: '', component: LoginComponent},
+    {path: 'login', component: LoginComponent},
+    {path: 'register', component: RegisterComponent},
+    {path: 'panel', component: PartidosComponent,canActivate: [AuthGuard]},
+    {path: 'match-detail/:id', component: MatchDetailComponent,canActivate: [AuthGuard]},
+    {path: 'team-detail/:id', component: TeamDetailComponent,canActivate: [AuthGuard]},
+    {path: 'liga', component: ClasificacionComponent,canActivate: [AuthGuard]},
+    {path: 'ranking', component: RankingComponent,canActivate: [AuthGuard]},
+    {path: 'historial', component: HistorialComponent,canActivate: [AuthGuard]},
+    {path: 'perfil', component: PerfilComponent,canActivate: [AuthGuard]},
+    {path: '**', component: LoginComponent},
 ];

@@ -1,75 +1,109 @@
-ion-content {
-  --background: #f4f5f8; // Un fondo gris muy sutil para destacar el formulario blanco
+ion-content.contenido-pantalla {
+  --background: var(--ion-background-color);
+  --overflow: hidden; 
 }
 
-.login-container {
+.contenedor-dividido {
+  height: 100vh;
+  width: 100%;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+
+.lado-marca {
+  background: linear-gradient(160deg, var(--ion-color-primary) 0%, #004d39 100%);
   display: flex;
-  flex-direction: column;
   justify-content: center;
-  height: 100%;
-  max-width: 400px;
-  margin: 0 auto; // Lo centra en pantallas grandes (Escritorio/PWA)
-}
-
-.header-section {
+  align-items: center;
   text-align: center;
-  margin-bottom: 2.5rem;
+  padding: 20px;
 
-  .logo-icon {
-    font-size: 80px;
+  ion-icon {
+    font-size: 6rem;
+    color: var(--amarillo-bet);
     margin-bottom: 10px;
   }
 
   h1 {
-    font-size: 2.5rem;
-    font-weight: 900;
+    font-size: 3rem;
+    font-weight: 800; 
+    color: white;
     margin: 0;
-    letter-spacing: -1px;
-    color: var(--ion-color-dark);
+    text-transform: uppercase;
+  }
+
+  .bet {
+    color: var(--amarillo-bet);
+  }
+
+  .connect{
+    color: white;
   }
 
   p {
-    color: var(--ion-color-medium);
-    font-size: 1.1rem;
+    color: var(--gris-texto);
+    font-size: 1.2rem;
+    margin-top: 10px;
+  }
+}
+
+.lado-formulario {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: var(--ion-background-color);
+  padding: 20px;
+}
+
+.tarjeta-acceso {
+  width: 100%;
+  max-width: 380px;
+  background: var(--ion-card-background);
+  border: 4px solid var(--amarillo-bet); 
+  
+  ion-card-title {
+    color: white;
+    font-weight: bold;
+    font-size: 1.5rem;
+  }
+  
+  ion-card-subtitle {
+    color: var(--gris-texto);
     margin-top: 5px;
   }
 }
 
-.form-section {
-  .input-item {
-    --background: #ffffff;
-    --border-radius: 12px;
-    --padding-start: 16px;
-    margin-bottom: 1.2rem;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.04);
-  }
+.campo-entrada {
+  --background: #3a3a3a;
+  --color: white;
+  border-radius: 4px;
+  margin-bottom: 15px;
+  border: 1px solid #444;
 
-  .login-btn {
-    --box-shadow: 0 4px 12px rgba(var(--ion-color-primary-rgb), 0.4);
-    height: 55px;
-    font-size: 1.1rem;
-    font-weight: bold;
-    margin-top: 1.5rem;
+  ion-label {
+    color: var(--amarillo-bet) !important;
+    font-weight: 600;
   }
 }
 
-.footer-section {
+.boton-bet {
+  --background: var(--amarillo-bet);
+  --color: black; 
+  --border-radius: 4px;
+  font-weight: bold;
+  font-size: 1.1rem;
+  margin-top: 20px;
+  height: 48px;
+}
+
+.texto-pie {
   text-align: center;
-  margin-top: 2rem;
-
-  p {
-    color: var(--ion-color-medium);
-    font-size: 1rem;
-    line-height: 1.6;
-  }
-
+  color: var(--gris-texto);
+  margin-top: 15px;
+  
   a {
-    color: var(--ion-color-primary);
-    font-weight: 700;
+    color: var(--amarillo-bet);
     text-decoration: none;
-    
-    &:hover {
-      text-decoration: underline;
-    }
+    font-weight: bold;
   }
 }

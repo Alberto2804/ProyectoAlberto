@@ -28,7 +28,7 @@ export class PerfilComponent implements OnInit {
     private authService: AuthService,
     private router: Router,
     private toastCtrl: ToastController
-  ) {}
+  ) { }
 
   async ngOnInit() {
     const authUser: any = await this.authService.getUser();
@@ -37,7 +37,7 @@ export class PerfilComponent implements OnInit {
 
     if (this.user?.username) {
       this.nombreUsuario = this.user.username;
-      this.usernameEdit  = this.user.username;
+      this.usernameEdit = this.user.username;
     }
     if (typeof this.user?.points === 'number') this.puntos = this.user.points;
     if (this.user?.avatar) this.avatarSeleccionado = this.user.avatar;
@@ -65,7 +65,7 @@ export class PerfilComponent implements OnInit {
 
     const actualizado = { ...this.user, username, avatar: this.avatarSeleccionado };
     await Preferences.set({ key: 'user_bet', value: JSON.stringify(actualizado) });
-    await Preferences.set({ key: 'user',     value: JSON.stringify(actualizado) });
+    await Preferences.set({ key: 'user', value: JSON.stringify(actualizado) });
     this.authService.usuarioActual = actualizado;
     this.user = actualizado;
     this.nombreUsuario = username;
@@ -87,6 +87,20 @@ export class PerfilComponent implements OnInit {
     try { return JSON.parse(raw); } catch { return null; }
   }
 
+  get perfil() {
+    return this.user || { username: 'Usuario', points: 0, bets: [] };
+  }
+
+  estadisticas = { acertadas: 0, falladas: 0 };
+
+  cambiarAvatar() {
+    const currentIndex = this.avatares.indexOf(this.avatarSeleccionado);
+    const nextIndex = (currentIndex + 1) % this.avatares.length;
+    this.avatarSeleccionado = this.avatares[nextIndex];
+    this.guardarCambios();
+  }
+
+  // Helper for toast
   private async mostrarToast(mensaje: string, color: 'danger' | 'success' = 'danger') {
     const toast = await this.toastCtrl.create({ message: mensaje, duration: 2000, color, position: 'bottom' });
     await toast.present();

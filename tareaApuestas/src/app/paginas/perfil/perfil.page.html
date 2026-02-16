@@ -1,55 +1,91 @@
-<ion-header class="ion-no-border">
-  <ion-toolbar class="cabecera-oscura">
-    <ion-title color="light">Mi Perfil</ion-title>
-    <ion-buttons slot="end">
-      <ion-button (click)="cerrarSesion()" color="danger">
-        <ion-icon slot="icon-only" name="log-out-outline"></ion-icon>
-      </ion-button>
-    </ion-buttons>
-  </ion-toolbar>
-</ion-header>
-
-<ion-content class="fondo-app">
-  <div class="contenedor-principal" *ngIf="perfil">
-    
-    <ion-card class="tarjeta-modulo" style="text-align: center; padding: 20px;">
-      <img [src]="avatarUrl" style="width: 120px; height: 120px; border-radius: 50%; margin: 0 auto; border: 3px solid #4ade80;">
-      <h2 style="color: white; text-transform: uppercase; font-weight: bold; margin-top: 15px;">{{ perfil.username }}</h2>
-      <ion-badge color="warning" style="font-size: 1.1rem; padding: 8px;">{{ perfil.points }} Puntos Globales</ion-badge>
-      
-      <div style="margin-top: 15px;">
-        <ion-button size="small" color="light" fill="outline" (click)="cambiarAvatar()">
-          <ion-icon name="refresh-outline" slot="start"></ion-icon>
-          Cambiar Avatar
-        </ion-button>
+<ion-content [fullscreen]="true" class="pantalla-panel">
+  <div class="panel-layout">
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="brand-icon">
+          <ion-icon name="football-outline"></ion-icon>
+        </div>
+        <div>
+          <h2><span class="bet">Bet</span><span class="connect">Connect</span></h2>
+          <p>APUESTA DURISIMO</p>
+        </div>
       </div>
 
-      <div style="display: flex; justify-content: center; gap: 20px; margin-top: 20px;">
-        <div style="color: #4ade80;"><strong>{{ estadisticas.acertadas }}</strong> Acertadas</div>
-        <div style="color: #f87171;"><strong>{{ estadisticas.falladas }}</strong> Falladas</div>
+      <nav class="menu">
+        <a routerLink="/panel" routerLinkActive="activo" [routerLinkActiveOptions]="{ exact: true }">
+          <ion-icon name="grid-outline"></ion-icon>
+          <span>Panel</span>
+        </a>
+        <a routerLink="/liga" routerLinkActive="activo">
+          <ion-icon name="football-outline"></ion-icon>
+          <span>Liga</span>
+        </a>
+        <a routerLink="/ranking" routerLinkActive="activo">
+          <ion-icon name="stats-chart-outline"></ion-icon>
+          <span>Ranking</span>
+        </a>
+        <a routerLink="/perfil" routerLinkActive="activo">
+          <ion-icon name="person-circle-outline"></ion-icon>
+          <span>Mi Perfil</span>
+        </a>
+        <a routerLink="/historial" routerLinkActive="activo">
+          <ion-icon name="time-outline"></ion-icon>
+          <span>Historial</span>
+        </a>
+      </nav>
+
+      <div class="sidebar-footer">
+        <div class="usuario">
+          <img class="usuario-avatar" [src]="avatarUrlSeleccionado" [alt]="nombreUsuario" />
+          <span>{{ nombreUsuario }}</span>
+        </div>
+        <button type="button" class="btn-salir" (click)="cerrarSesion()">
+          <ion-icon name="log-out-outline"></ion-icon>
+          Cerrar Sesion
+        </button>
       </div>
-    </ion-card>
+    </aside>
 
-    <h2 style="color: white; margin-top: 20px; font-size: 1.2rem;">Historial de Apuestas</h2>
-    
-    <ion-card class="tarjeta-modulo" *ngIf="perfil.bets && perfil.bets.length > 0; else sinApuestas">
-      <ion-list style="background: transparent;">
-        <ion-item *ngFor="let apuesta of perfil.bets" color="dark" lines="full">
-          <ion-icon name="ticket-outline" slot="start" [color]="apuesta.pointsEarned > 0 ? 'success' : 'medium'"></ion-icon>
-          <ion-label style="color: white;">
-            <h2>Partido #{{ apuesta.matchId }}</h2>
-            <p style="color: #a0aec0;">Pronóstico: {{ apuesta.homeScore }} - {{ apuesta.awayScore }}</p>
-          </ion-label>
-          <ion-badge slot="end" [color]="apuesta.pointsEarned === 10 ? 'success' : (apuesta.pointsEarned === 5 ? 'warning' : 'medium')">
-            +{{ apuesta.pointsEarned || 0 }} pts
-          </ion-badge>
-        </ion-item>
-      </ion-list>
-    </ion-card>
+    <main class="contenido">
+      <header class="cabecera">
+        <div>
+          <h1>Configuracion de Perfil</h1>
+          <p>PERSONALIZA TU CUENTA</p>
+        </div>
+        <div class="puntos-chip">{{ puntos }} pts</div>
+      </header>
 
-    <ng-template #sinApuestas>
-      <p style="color: #a0aec0; text-align: center; margin-top: 20px;">No hay historial de apuestas.</p>
-    </ng-template>
+      <section class="perfil-wrap">
+        <article class="panel">
+          <div class="perfil-head">
+            <div class="avatar-big">
+              <img [src]="avatarUrlSeleccionado" [alt]="nombreUsuario" />
+            </div>
+            <div>
+              <h2>{{ nombreUsuario }}</h2>
+              <p>Miembro desde {{ miembroDesde }}</p>
+            </div>
+          </div>
+        </article>
 
+        <article class="panel">
+          <h3>Detalles Publicos</h3>
+
+          <label class="label">Nombre de usuario</label>
+          <input type="text" [(ngModel)]="usernameEdit" />
+
+          <label class="label">Cambiar avatar</label>
+          <div class="avatares">
+            @for (avatar of avatares; track avatar) {
+              <button type="button" [class.activo]="avatar === avatarSeleccionado" (click)="seleccionarAvatar(avatar)">
+                <img [src]="avatarUrl(avatar)" [alt]="avatar" />
+              </button>
+            }
+          </div>
+
+          <button type="button" class="btn-guardar" (click)="guardarCambios()">Confirmar Cambios</button>
+        </article>
+      </section>
+    </main>
   </div>
 </ion-content>

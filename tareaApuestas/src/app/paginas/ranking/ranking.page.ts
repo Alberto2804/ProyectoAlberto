@@ -5,12 +5,14 @@ import { IonicModule } from '@ionic/angular';
 import { AuthService } from '../../servicios/auth';
 import { BetService } from '../../servicios/apuestas';
 
+import { SidebarComponent } from '../../componentes/sidebar/sidebar.component';
+
 @Component({
   selector: 'app-ranking',
   templateUrl: './ranking.page.html',
   styleUrls: ['./ranking.page.scss'],
   standalone: true,
-  imports: [IonicModule, CommonModule, RouterModule]
+  imports: [IonicModule, CommonModule, RouterModule, SidebarComponent]
 })
 export class RankingComponent implements OnInit {
 
@@ -24,7 +26,7 @@ export class RankingComponent implements OnInit {
     private authService: AuthService,
     private betService: BetService,
     private router: Router
-  ) {}
+  ) { }
 
   async ngOnInit() {
     const user: any = await this.authService.getUser();
@@ -46,7 +48,7 @@ export class RankingComponent implements OnInit {
     await this.router.navigate(['/login']);
   }
 
-   async cargarRanking() {
+  async cargarRanking() {
     this.cargando = true;
     this.error = '';
     try {

@@ -8,8 +8,8 @@ import { SoccerService } from '../../servicios/futbol';
 
 @Component({
   selector: 'app-team-detail',
-  templateUrl: './team-detail.component.html',
-  styleUrls: ['./team-detail.component.scss'],
+  templateUrl: './detalle-equipo.page.html',
+  styleUrls: ['./detalle-equipo.page.scss'],
   standalone: true,
   imports: [IonicModule, CommonModule, RouterModule]
 })
@@ -25,27 +25,27 @@ export class TeamDetailComponent implements OnInit, OnDestroy {
   private routeSub?: Subscription;
 
   escudos: any = {
-    alaves:     'assets/escudos/alaves.png',
-    almeria:    'assets/escudos/almeria.png',
-    athletic:   'assets/escudos/athletic.png',
-    atletico:   'assets/escudos/atletico.png',
-    betis:      'assets/escudos/betis.png',
-    cadiz:      'assets/escudos/cadiz.png',
-    celta:      'assets/escudos/celta.png',
-    barcelona:  'assets/escudos/fc_barcelona.png',
-    getafe:     'assets/escudos/getafe.png',
-    girona:     'assets/escudos/girona.png',
-    granada:    'assets/escudos/granada.png',
-    palmas:     'assets/escudos/las_palmas.png',
-    mallorca:   'assets/escudos/mallorca.png',
-    osasuna:    'assets/escudos/osasuna.png',
-    rayo:       'assets/escudos/rayo.png',
-    madrid:     'assets/escudos/real_madrid.png',
-    sociedad:   'assets/escudos/real_sociedad.png',
-    sevilla:    'assets/escudos/sevilla.png',
-    valencia:   'assets/escudos/valencia.png',
+    alaves: 'assets/escudos/alaves.png',
+    almeria: 'assets/escudos/almeria.png',
+    athletic: 'assets/escudos/athletic.png',
+    atletico: 'assets/escudos/atletico.png',
+    betis: 'assets/escudos/betis.png',
+    cadiz: 'assets/escudos/cadiz.png',
+    celta: 'assets/escudos/celta.png',
+    barcelona: 'assets/escudos/fc_barcelona.png',
+    getafe: 'assets/escudos/getafe.png',
+    girona: 'assets/escudos/girona.png',
+    granada: 'assets/escudos/granada.png',
+    palmas: 'assets/escudos/las_palmas.png',
+    mallorca: 'assets/escudos/mallorca.png',
+    osasuna: 'assets/escudos/osasuna.png',
+    rayo: 'assets/escudos/rayo.png',
+    madrid: 'assets/escudos/real_madrid.png',
+    sociedad: 'assets/escudos/real_sociedad.png',
+    sevilla: 'assets/escudos/sevilla.png',
+    valencia: 'assets/escudos/valencia.png',
     villarreal: 'assets/escudos/villarreal.png',
-    default:    'assets/icon/favicon.png'
+    default: 'assets/icon/favicon.png'
   };
 
   constructor(
@@ -54,7 +54,7 @@ export class TeamDetailComponent implements OnInit, OnDestroy {
     private location: Location,
     private authService: AuthService,
     private soccerService: SoccerService
-  ) {}
+  ) { }
 
   async ngOnInit() {
     await this.cargarUsuario();
@@ -68,8 +68,8 @@ export class TeamDetailComponent implements OnInit, OnDestroy {
   }
 
   get victorias(): number { return this.standing?.wins ?? 0; }
-  get empates(): number   { return this.standing?.draws ?? 0; }
-  get derrotas(): number  { return this.standing?.losses ?? 0; }
+  get empates(): number { return this.standing?.draws ?? 0; }
+  get derrotas(): number { return this.standing?.losses ?? 0; }
 
   async recargar() { await this.cargarDatos(); }
 
@@ -130,7 +130,7 @@ export class TeamDetailComponent implements OnInit, OnDestroy {
         const players = await this.soccerService.getPlayers(nombre);
         const lista = Array.isArray(players) ? players : [];
         if (lista.length > 0) return [...lista].sort((a, b) => (b.goals ?? 0) - (a.goals ?? 0));
-      } catch (_) {}
+      } catch (_) { }
     }
     return [];
   }
@@ -166,17 +166,17 @@ export class TeamDetailComponent implements OnInit, OnDestroy {
         const row = item as any;
         const teamName = this.obtenerNombreEquipo(row.teamName ?? row.team ?? row.name);
         if (!teamName) return null;
-        const goalsFor     = this.aNumero(row.goalsFor ?? row.gf);
+        const goalsFor = this.aNumero(row.goalsFor ?? row.gf);
         const goalsAgainst = this.aNumero(row.goalsAgainst ?? row.gc);
         return {
           ...item,
           index,
           teamName,
           matchesPlayed: this.aNumero(row.matchesPlayed ?? row.pj),
-          points:        this.aNumero(row.points ?? row.pts),
-          wins:          this.aNumero(row.wins ?? row.won ?? row.pg),
-          draws:         this.aNumero(row.draws ?? row.draw ?? row.pe),
-          losses:        this.aNumero(row.losses ?? row.lost ?? row.pp),
+          points: this.aNumero(row.points ?? row.pts),
+          wins: this.aNumero(row.wins ?? row.won ?? row.pg),
+          draws: this.aNumero(row.draws ?? row.draw ?? row.pe),
+          losses: this.aNumero(row.losses ?? row.lost ?? row.pp),
           goalsFor,
           goalsAgainst
         };
@@ -194,25 +194,25 @@ export class TeamDetailComponent implements OnInit, OnDestroy {
 
   private claveEquipo(nombre: string): string {
     const normalizado = this.normalizarNombreEquipo(nombre);
-    if (normalizado.includes('alaves'))     return 'alaves';
-    if (normalizado.includes('almeria'))    return 'almeria';
-    if (normalizado.includes('athletic'))   return 'athletic';
-    if (normalizado.includes('atletico'))   return 'atletico';
-    if (normalizado.includes('betis'))      return 'betis';
-    if (normalizado.includes('cadiz'))      return 'cadiz';
-    if (normalizado.includes('celta'))      return 'celta';
-    if (normalizado.includes('barcelona'))  return 'barcelona';
-    if (normalizado.includes('getafe'))     return 'getafe';
-    if (normalizado.includes('girona'))     return 'girona';
-    if (normalizado.includes('granada'))    return 'granada';
-    if (normalizado.includes('palmas'))     return 'palmas';
-    if (normalizado.includes('mallorca'))   return 'mallorca';
-    if (normalizado.includes('osasuna'))    return 'osasuna';
-    if (normalizado.includes('rayo'))       return 'rayo';
+    if (normalizado.includes('alaves')) return 'alaves';
+    if (normalizado.includes('almeria')) return 'almeria';
+    if (normalizado.includes('athletic')) return 'athletic';
+    if (normalizado.includes('atletico')) return 'atletico';
+    if (normalizado.includes('betis')) return 'betis';
+    if (normalizado.includes('cadiz')) return 'cadiz';
+    if (normalizado.includes('celta')) return 'celta';
+    if (normalizado.includes('barcelona')) return 'barcelona';
+    if (normalizado.includes('getafe')) return 'getafe';
+    if (normalizado.includes('girona')) return 'girona';
+    if (normalizado.includes('granada')) return 'granada';
+    if (normalizado.includes('palmas')) return 'palmas';
+    if (normalizado.includes('mallorca')) return 'mallorca';
+    if (normalizado.includes('osasuna')) return 'osasuna';
+    if (normalizado.includes('rayo')) return 'rayo';
     if (normalizado.includes('real madrid') || normalizado === 'madrid') return 'madrid';
-    if (normalizado.includes('sociedad'))   return 'sociedad';
-    if (normalizado.includes('sevilla'))    return 'sevilla';
-    if (normalizado.includes('valencia'))   return 'valencia';
+    if (normalizado.includes('sociedad')) return 'sociedad';
+    if (normalizado.includes('sevilla')) return 'sevilla';
+    if (normalizado.includes('valencia')) return 'valencia';
     if (normalizado.includes('villarreal')) return 'villarreal';
     return normalizado;
   }

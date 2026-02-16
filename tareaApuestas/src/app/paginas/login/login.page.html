@@ -1,49 +1,42 @@
-<ion-content class="ion-padding">
-  <div class="login-container">
+<ion-content class="contenido-pantalla">
+  <div class="contenedor-dividido">
     
-    <div class="header-section">
-      <ion-icon name="football-outline" class="logo-icon" color="primary"></ion-icon>
-      <h1>BETS SOCCER</h1>
-      <p>El desafío de los pronósticos</p>
-    </div>
+    <section class="lado-marca">
+      <div class="centro-marca">
+        <ion-icon name="football-outline"></ion-icon>
+        <h1><span class="bet">Bet</span><span class="connect">Connect</span></h1>
+        <p>Demuestra lo que sabes de fútbol.</p>
+      </div>
+    </section>
 
-    <div class="form-section">
-      <ion-item class="input-item" lines="none">
-        <ion-icon name="person-outline" slot="start" color="medium"></ion-icon>
-        <ion-input 
-          [(ngModel)]="username" 
-          type="text" 
-          placeholder="Nombre de usuario"
-          required>
-        </ion-input>
-      </ion-item>
+    <section class="lado-formulario">
+      <ion-card class="tarjeta-acceso">
+        <ion-card-header>
+          <ion-card-title>Bienvenido</ion-card-title>
+          <ion-card-subtitle>Inicia sesión para jugar</ion-card-subtitle>
+        </ion-card-header>
 
-      <ion-item class="input-item" lines="none">
-        <ion-icon name="lock-closed-outline" slot="start" color="medium"></ion-icon>
-        <ion-input 
-          [(ngModel)]="password" 
-          type="password" 
-          placeholder="Contraseña"
-          required>
-        </ion-input>
-      </ion-item>
+        <ion-card-content>
+          <ion-item lines="none" class="campo-entrada">
+            <ion-label position="stacked">Correo</ion-label>
+            <ion-input [(ngModel)]="credenciales.email" type="email" placeholder="Tu correo"></ion-input>
+          </ion-item>
 
-      <ion-button 
-        expand="block" 
-        shape="round" 
-        class="ion-margin-top login-btn"
-        (click)="login()"
-        [disabled]="cargando">
-        <ion-spinner name="crescent" *ngIf="cargando"></ion-spinner>
-        <span *ngIf="!cargando">Entrar al terreno de juego</span>
-      </ion-button>
-    </div>
+          <ion-item lines="none" class="campo-entrada">
+            <ion-label position="stacked">Contraseña</ion-label>
+            <ion-input [(ngModel)]="credenciales.password" type="password" placeholder="********"></ion-input>
+          </ion-item>
 
-    <div class="footer-section">
-      <p>¿No eres de la plantilla aún? <br>
-        <a routerLink="/registro">¡Ficha y empieza a jugar!</a>
-      </p>
-    </div>
+          <ion-button expand="block" class="boton-bet" (click)="login()">
+            Entrar
+          </ion-button>
+
+          <p class="texto-pie">
+            ¿Nuevo aquí? <a routerLink="/register">Crea tu cuenta</a>
+          </p>
+        </ion-card-content>
+      </ion-card>
+    </section>
 
   </div>
 </ion-content>

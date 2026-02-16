@@ -8,7 +8,7 @@ import { SoccerService } from '../../servicios/futbol';
 @Component({
   selector: '',
   templateUrl: './clasificacion.page.html',
-  styleUrls: ['./liga.component.scss'],
+  styleUrls: ['./clasificacion.page.scss'],
   standalone: true,
   imports: [IonicModule, CommonModule, RouterModule]
 })
@@ -29,27 +29,27 @@ export class ClasificacionComponent implements OnInit {
   readonly jornadaMax = 38;
 
   escudos: Record<string, string> = {
-    alaves:     'assets/escudos/alaves.png',
-    almeria:    'assets/escudos/almeria.png',
-    athletic:   'assets/escudos/athletic.png',
-    atletico:   'assets/escudos/atletico.png',
-    betis:      'assets/escudos/betis.png',
-    cadiz:      'assets/escudos/cadiz.png',
-    celta:      'assets/escudos/celta.png',
-    barcelona:  'assets/escudos/fc_barcelona.png',
-    getafe:     'assets/escudos/getafe.png',
-    girona:     'assets/escudos/girona.png',
-    granada:    'assets/escudos/granada.png',
-    palmas:     'assets/escudos/las_palmas.png',
-    mallorca:   'assets/escudos/mallorca.png',
-    osasuna:    'assets/escudos/osasuna.png',
-    rayo:       'assets/escudos/rayo.png',
-    madrid:     'assets/escudos/real_madrid.png',
-    sociedad:   'assets/escudos/real_sociedad.png',
-    sevilla:    'assets/escudos/sevilla.png',
-    valencia:   'assets/escudos/valencia.png',
+    alaves: 'assets/escudos/alaves.png',
+    almeria: 'assets/escudos/almeria.png',
+    athletic: 'assets/escudos/athletic.png',
+    atletico: 'assets/escudos/atletico.png',
+    betis: 'assets/escudos/betis.png',
+    cadiz: 'assets/escudos/cadiz.png',
+    celta: 'assets/escudos/celta.png',
+    barcelona: 'assets/escudos/fc_barcelona.png',
+    getafe: 'assets/escudos/getafe.png',
+    girona: 'assets/escudos/girona.png',
+    granada: 'assets/escudos/granada.png',
+    palmas: 'assets/escudos/las_palmas.png',
+    mallorca: 'assets/escudos/mallorca.png',
+    osasuna: 'assets/escudos/osasuna.png',
+    rayo: 'assets/escudos/rayo.png',
+    madrid: 'assets/escudos/real_madrid.png',
+    sociedad: 'assets/escudos/real_sociedad.png',
+    sevilla: 'assets/escudos/sevilla.png',
+    valencia: 'assets/escudos/valencia.png',
     villarreal: 'assets/escudos/villarreal.png',
-    default:    'assets/icon/favicon.png'
+    default: 'assets/icon/favicon.png'
   };
 
   constructor(soccerService: SoccerService, authService: AuthService, router: Router) {
@@ -110,8 +110,8 @@ export class ClasificacionComponent implements OnInit {
     this.error = '';
     try {
       const standings = await this.soccerService.getStandings();
-      const partidos  = await this.soccerService.getPartidos();
-      this.tabla    = this.mapearStandings(standings ?? []);
+      const partidos = await this.soccerService.getPartidos();
+      this.tabla = this.mapearStandings(standings ?? []);
       this.partidos = partidos ?? [];
       if (this.partidos.length > 0) {
         this.jornadaActual = this.detectarJornadaActual();
@@ -142,13 +142,13 @@ export class ClasificacionComponent implements OnInit {
           ...item,
           index,
           teamName,
-          points:        Number(item.points ?? item.pts ?? 0),
+          points: Number(item.points ?? item.pts ?? 0),
           matchesPlayed: Number(item.matchesPlayed ?? item.pj ?? 0),
-          wins:          Number(item.wins ?? item.won ?? item.pg ?? 0),
-          draws:         Number(item.draws ?? item.draw ?? item.pe ?? 0),
-          losses:        Number(item.losses ?? item.lost ?? item.pp ?? 0),
-          goalsFor:      Number(item.goalsFor ?? item.gf ?? 0),
-          goalsAgainst:  Number(item.goalsAgainst ?? item.gc ?? 0)
+          wins: Number(item.wins ?? item.won ?? item.pg ?? 0),
+          draws: Number(item.draws ?? item.draw ?? item.pe ?? 0),
+          losses: Number(item.losses ?? item.lost ?? item.pp ?? 0),
+          goalsFor: Number(item.goalsFor ?? item.gf ?? 0),
+          goalsAgainst: Number(item.goalsAgainst ?? item.gc ?? 0)
         };
       })
       .filter(item => item !== null);
@@ -170,30 +170,30 @@ export class ClasificacionComponent implements OnInit {
       .replace(/\s+/g, ' ')
       .trim();
 
-    if (n.includes('alaves'))     return 'alaves';
-    if (n.includes('almeria'))    return 'almeria';
-    if (n.includes('athletic'))   return 'athletic';
-    if (n.includes('atletico'))   return 'atletico';
-    if (n.includes('betis'))      return 'betis';
-    if (n.includes('cadiz'))      return 'cadiz';
-    if (n.includes('celta'))      return 'celta';
-    if (n.includes('barcelona'))  return 'barcelona';
-    if (n.includes('getafe'))     return 'getafe';
-    if (n.includes('girona'))     return 'girona';
-    if (n.includes('granada'))    return 'granada';
-    if (n.includes('palmas'))     return 'palmas';
-    if (n.includes('mallorca'))   return 'mallorca';
-    if (n.includes('osasuna'))    return 'osasuna';
-    if (n.includes('rayo'))       return 'rayo';
-    if (n.includes('madrid'))     return 'madrid';
-    if (n.includes('sociedad'))   return 'sociedad';
-    if (n.includes('sevilla'))    return 'sevilla';
-    if (n.includes('valencia'))   return 'valencia';
+    if (n.includes('alaves')) return 'alaves';
+    if (n.includes('almeria')) return 'almeria';
+    if (n.includes('athletic')) return 'athletic';
+    if (n.includes('atletico')) return 'atletico';
+    if (n.includes('betis')) return 'betis';
+    if (n.includes('cadiz')) return 'cadiz';
+    if (n.includes('celta')) return 'celta';
+    if (n.includes('barcelona')) return 'barcelona';
+    if (n.includes('getafe')) return 'getafe';
+    if (n.includes('girona')) return 'girona';
+    if (n.includes('granada')) return 'granada';
+    if (n.includes('palmas')) return 'palmas';
+    if (n.includes('mallorca')) return 'mallorca';
+    if (n.includes('osasuna')) return 'osasuna';
+    if (n.includes('rayo')) return 'rayo';
+    if (n.includes('madrid')) return 'madrid';
+    if (n.includes('sociedad')) return 'sociedad';
+    if (n.includes('sevilla')) return 'sevilla';
+    if (n.includes('valencia')) return 'valencia';
     if (n.includes('villarreal')) return 'villarreal';
     return n;
   }
 
-    async irDetalle(idPartido: number) {
+  async irDetalle(idPartido: number) {
     this.router.navigate(['/match-detail', idPartido]);
   }
 }
