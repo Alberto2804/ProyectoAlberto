@@ -1,52 +1,102 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { environment } from 'src/environments/environment';
+import { BehaviorSubject, Observable, throwError } from 'rxjs';
+import { tap, catchError } from 'rxjs/operators';
 import { Preferences } from '@capacitor/preferences';
-import { environment } from '../../environments/environment';
-import { BehaviorSubject, Observable } from 'rxjs';
-import { tap } from 'rxjs/operators';
 
-const TOKEN_KEY = 'jwt-token';
 
-@Injectable({ providedIn: 'root' })
+import { User, AuthResponse } from '../modelos/interfaces'; 
+
+@Injectable({
+  providedIn: 'root'
+})
 export class AuthService {
-  private urlApi = environment.urlApi;
-  private authState = new BehaviorSubject<boolean>(false);
 
-  constructor(private http: HttpClient) { this.checkToken(); }
+  private readonly API_URL = environment.apiUrl;
+  
+  private authSubject = new BehaviorSubject<boolean>(false);
+  
+ 
+  private usuarioActual: User | null = null; 
 
-  async checkToken() {
-    const { value } = await Preferences.get({ key: TOKEN_KEY });
-    this.authState.next(!!value);
+  constructor(private http: HttpClient) {
+    this.cargarSesion();
   }
 
-  isAuthenticated(): Observable<boolean> { return this.authState.asObservable(); }
+  
+  private async cargarSesion(): Promise<void> {
+    const { value: token } = await Preferences.get({ key: 'token' });
+    const { value: userJson } = await Preferences.get({ key: 'user' });
 
-  async getToken(): Promise<string | null> {
-    const { value } = await Preferences.get({ key: TOKEN_KEY });
-    return value;
+    if (token && userJson) {
+      this.usuarioActual = JSON.parse(userJson) as User;
+      this.authSubject.next(true);
+    } else {
+      this.authSubject.next(false);
+    }
   }
 
-  login(credentials: any): Observable<any> {
-    return this.http.post(`${this.urlApi}/login`, credentials).pipe(
-      tap(async (res: any) => {
-        if (res && res.token) {
-          await Preferences.set({ key: TOKEN_KEY, value: res.token });
-          this.authState.next(true);
+ 
+  login(credenciales: { email: string; password: string }): Observable<AuthResponse> {
+    return this.http.post<AuthResponse>(`${this.API_URL}/login`, credenciales).pipe(
+      tap(async (res) => {
+        if (res.token && res.user) {
+          await this.guardarDatosSesion(res.token, res.user);
         }
-      })
+      }),
+      catchError(this.handleError)
     );
   }
 
-  register(user: any): Observable<any> {
-    return this.http.post(`${this.urlApi}/register`, user);
+  
+  register(datos: any): Observable<AuthResponse> {
+    return this.http.post<AuthResponse>(`${this.API_URL}/register`, datos).pipe(
+      tap(async (res) => {
+        if (res.token && res.user) {
+          await this.guardarDatosSesion(res.token, res.user);
+        }
+      }),
+      catchError(this.handleError)
+    );
   }
 
-  obtenerPerfil(): Observable<any> {
-    return this.http.get(`${this.urlApi}/profile`);
+  
+  private async guardarDatosSesion(token: string, user: User): Promise<void> {
+    await Preferences.set({ key: 'token', value: token });
+    await Preferences.set({ key: 'user', value: JSON.stringify(user) });
+    
+    this.usuarioActual = user;
+    this.authSubject.next(true);
   }
 
-  async logout() {
-    await Preferences.remove({ key: TOKEN_KEY });
-    this.authState.next(false);
+ 
+  async logout(): Promise<void> {
+    await Preferences.clear();
+    this.usuarioActual = null;
+    this.authSubject.next(false);
+  }
+
+  
+  get isLoggedIn$(): Observable<boolean> {
+    return this.authSubject.asObservable();
+  }
+
+ 
+  get currentUser(): User | null {
+    return this.usuarioActual;
+  }
+
+
+  async getToken(): Promise<string | null> {
+    const { value } = await Preferences.get({ key: 'token' });
+    return value;
+  }
+
+  
+  private handleError(error: any) {
+    console.error('Error de Autenticación:', error);
+    const mensaje = error.error?.message || 'Ha ocurrido un error inesperado. Inténtalo de nuevo.';
+    return throwError(() => new Error(mensaje));
   }
 }

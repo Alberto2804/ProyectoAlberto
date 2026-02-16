@@ -1,58 +1,79 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
 import { IonicModule, ToastController } from '@ionic/angular';
-import { Router, RouterLink } from '@angular/router';
-import { AuthService } from '../../servicios/auth'; 
+import { FormsModule } from '@angular/forms';
+import { Router, RouterModule } from '@angular/router';
+import { AuthService } from '../../servicios/auth';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-login',
   templateUrl: './login.page.html',
   styleUrls: ['./login.page.scss'],
   standalone: true,
-  imports: [IonicModule, CommonModule, FormsModule, RouterLink]
+  imports: [IonicModule, CommonModule, FormsModule, RouterModule]
 })
-export class LoginPage implements OnInit {
-  email = '';
-  password = '';
-  cargando = false;
+export class LoginComponent {
+  credenciales = {
+    email: '', 
+    password: ''
+  };
 
   constructor(
-    private authService: AuthService,
-    private router: Router,
-    private toastController: ToastController
-  ) { }
+    private auth: AuthService, 
+    private router: Router, 
+    private toastCtrl: ToastController
+  ) {}
 
-  ngOnInit() {}
+  async login() {
+    const email = this.credenciales.email.trim();
+    const password = this.credenciales.password.trim();
 
-  login() {
-    if (!this.email || !this.password) {
-      this.mostrarMensaje('Por favor, rellena todos los campos');
+    if (!email || !password) {
+      this.mostrarToast('Por favor, completa correo y contraseña.');
       return;
     }
 
-    this.cargando = true;
-    
-    this.authService.login({ email: this.email, password: this.password }).subscribe({
-      next: () => {
-        this.cargando = false;
-        this.router.navigate(['/tabs/partidos']);
+    this.auth.login({ email, password }).subscribe({
+      next: async (res) => {
+        console.log('Login exitoso:', res);
+        await this.router.navigate(['/panel']);
       },
-      error: (err) => {
-        this.cargando = false;
-        this.mostrarMensaje(err.error?.error || 'Correo o contraseña incorrectos');
+      error: (error) => {
+        console.error('Error en login:', error);
+        this.mostrarToast(this.getAuthErrorMessage(error));
       }
     });
   }
 
-  async mostrarMensaje(mensaje: string) {
-    const toast = await this.toastController.create({
+  private getAuthErrorMessage(error: unknown): string {
+    if (!(error instanceof HttpErrorResponse)) {
+      return 'Error inesperado al iniciar sesión';
+    }
+
+    if (error.status === 0) {
+      return 'No se pudo conectar con el servidor (Revisa que el backend esté encendido)';
+    }
+
+    if (error.status === 401 || error.status === 400) {
+      return 'Usuario o contraseña incorrectos';
+    }
+
+    if (error.status === 503) {
+      return 'El servidor se está iniciando, intenta en unos segundos';
+    }
+
+    return error.error?.error || 'No se pudo iniciar sesión';
+  }
+
+  async mostrarToast(mensaje: string, color: string = 'danger') {
+    const toast = await this.toastCtrl.create({
       message: mensaje,
-      duration: 2200,
+      duration: 2000,
+      color: color,
       position: 'bottom',
-      color: 'danger',
       icon: 'alert-circle-outline'
     });
-    toast.present();
+    await toast.present();
   }
 }

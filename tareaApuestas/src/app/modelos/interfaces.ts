@@ -1,73 +1,66 @@
-export interface Usuario {
-  id: number;
-  username: string;
-  email?: string;
-  avatar?: string;
-  points: number;
-}
-
 export interface AuthResponse {
   token: string;
-  user: Usuario;
+  user: User;
+}
+export interface MatchEvent {
+  type: string;
+  team: string;
+  player: string;
+  playerId?: number | null;
+  playerAvatar?: string;
+  minute: number;
+  score?: string;
 }
 
-export interface Partido {
+export interface Match {
   id: number;
-  homeTeam: string;
-  awayTeam: string;
+  home: string;
+  away: string;
   homeScore: number;
   awayScore: number;
-  status: 'pending' | 'live' | 'finished'; 
-  minute: number;
-  startTime: string | Date;
-  home?: string;
-  away?: string;
-  time?: string | Date;
-  jornada?: number;
+  date?: string;
+  time?: string;
   league?: string;
-  events?: EventoPartido[];
+  status: 'pending' | 'live' | 'finished';
+  jornada: number;
+  events?: MatchEvent[];
 }
 
-export interface EventoPartido {
-  id?: number;
-  matchId: number;
-  type: string;
-  minute: number;
-  player: string;
-  team: string; 
-}
-
-export interface Equipo {
-  name: string;
-  strength: number;
-  played: number;
-  won: number;
-  drawn: number;
-  lost: number;
-  goalsFor: number;
-  goalsAgainst: number;
-  points: number;
-}
-
-
-export interface Clasificacion extends Equipo {
-  position?: number; 
-}
-
-export interface Jugador {
-  id: number;
-  name: string;
-  team: string;
-  goals: number;
-}
-
-
-export interface Apuesta {
+export interface Bet {
   id?: number;
   userId: number;
   matchId: number;
   homeScore: number;
   awayScore: number;
   pointsEarned?: number;
-  status?: 'pending' | 'resolved';
+  match?: Match;
+}
+
+export interface Player {
+  id: number;
+  name: string;
+  position: string;
+  team_name: string;
+  goals: number;
+  price: number;
+}
+
+export interface Standing {
+  team?: string;
+  teamName?: string;
+  points: number;
+  goalsFor: number;
+  goalsAgainst: number;
+  matchesPlayed: number;
+  wins?: number;
+  draws?: number;
+  losses?: number;
+  position?: number;
+}
+export interface User {
+  id: number;
+  username: string;
+  email: string;
+  points: number;
+  avatar: string;
 }

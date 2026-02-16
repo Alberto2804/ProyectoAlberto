@@ -1,57 +1,94 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { IonicModule } from '@ionic/angular';
-import { Router } from '@angular/router';
+import { FormsModule } from '@angular/forms';
+import { Router, RouterModule } from '@angular/router';
+import { IonicModule, ToastController } from '@ionic/angular';
+import { Preferences } from '@capacitor/preferences';
 import { AuthService } from '../../servicios/auth';
 
 @Component({
   selector: 'app-perfil',
-  templateUrl: './perfil.page.html',
-  styleUrls: ['./perfil.page.scss'],
+  templateUrl: './perfil.component.html',
+  styleUrls: ['./perfil.component.scss'],
   standalone: true,
-  imports: [IonicModule, CommonModule]
+  imports: [IonicModule, CommonModule, RouterModule, FormsModule]
 })
-export class PerfilPage implements OnInit {
-  perfil: any = null;
-  avatarSeed: string = 'bets-soccer';
-  avatarUrl: string = '';
-  estadisticas = { acertadas: 0, falladas: 0 };
+export class PerfilComponent implements OnInit {
 
-  constructor(private authService: AuthService, private router: Router) { }
+  nombreUsuario = 'Usuario';
+  puntos = 0;
+  usernameEdit = '';
+  avatarSeleccionado = 'star';
+  miembroDesde = new Date().getFullYear();
+  avatares = ['person', 'football', 'star', 'trophy', 'rocket', 'flame', 'flash', 'medal'];
 
-  ngOnInit() { this.cargarPerfil(); }
-  ionViewWillEnter() { this.cargarPerfil(); }
+  private user: any = null;
 
-  cargarPerfil() {
-    this.authService.obtenerPerfil().subscribe({
-      next: (data) => {
-        this.perfil = data;
-        this.avatarSeed = data.username;
-        this.actualizarAvatar();
-        this.calcularEstadisticas();
-      },
-      error: () => this.cerrarSesion()
-    });
+  constructor(
+    private authService: AuthService,
+    private router: Router,
+    private toastCtrl: ToastController
+  ) {}
+
+  async ngOnInit() {
+    const authUser: any = await this.authService.getUser();
+    const stored = await this.obtenerUsuarioGuardado();
+    this.user = { ...(stored ?? {}), ...(authUser ?? {}) };
+
+    if (this.user?.username) {
+      this.nombreUsuario = this.user.username;
+      this.usernameEdit  = this.user.username;
+    }
+    if (typeof this.user?.points === 'number') this.puntos = this.user.points;
+    if (this.user?.avatar) this.avatarSeleccionado = this.user.avatar;
   }
 
-
-  actualizarAvatar() {
-    this.avatarUrl = `https://api.dicebear.com/7.x/avataaars/svg?seed=${this.avatarSeed}&backgroundColor=0d1b11`;
+  seleccionarAvatar(avatar: string) {
+    this.avatarSeleccionado = avatar;
   }
 
-  cambiarAvatar() {
-    this.avatarSeed = Math.random().toString(36).substring(7);
-    this.actualizarAvatar();
+  get avatarUrlSeleccionado(): string {
+    return this.avatarUrl(this.avatarSeleccionado);
   }
 
-  calcularEstadisticas() {
-    if (!this.perfil.bets) return;
-    this.estadisticas.acertadas = this.perfil.bets.filter((b: any) => b.pointsEarned > 0).length;
-    this.estadisticas.falladas = this.perfil.bets.filter((b: any) => b.pointsEarned === 0).length;
+  avatarUrl(seed: string): string {
+    const safeSeed = String(seed ?? '').trim() || 'usuario';
+    return `https://api.dicebear.com/9.x/micah/svg?seed=${encodeURIComponent(safeSeed)}`;
+  }
+
+  async guardarCambios() {
+    const username = this.usernameEdit.trim();
+    if (username.length < 3) {
+      await this.mostrarToast('El usuario debe tener al menos 3 caracteres.');
+      return;
+    }
+
+    const actualizado = { ...this.user, username, avatar: this.avatarSeleccionado };
+    await Preferences.set({ key: 'user_bet', value: JSON.stringify(actualizado) });
+    await Preferences.set({ key: 'user',     value: JSON.stringify(actualizado) });
+    this.authService.usuarioActual = actualizado;
+    this.user = actualizado;
+    this.nombreUsuario = username;
+    await this.mostrarToast('Perfil actualizado.', 'success');
   }
 
   async cerrarSesion() {
     await this.authService.logout();
-    this.router.navigate(['/login'], { replaceUrl: true });
+    await this.router.navigate(['/login']);
+  }
+
+  private async obtenerUsuarioGuardado(): Promise<any> {
+    const [userBet, userLegacy] = await Promise.all([
+      Preferences.get({ key: 'user_bet' }),
+      Preferences.get({ key: 'user' })
+    ]);
+    const raw = userBet.value ?? userLegacy.value;
+    if (!raw) return null;
+    try { return JSON.parse(raw); } catch { return null; }
+  }
+
+  private async mostrarToast(mensaje: string, color: 'danger' | 'success' = 'danger') {
+    const toast = await this.toastCtrl.create({ message: mensaje, duration: 2000, color, position: 'bottom' });
+    await toast.present();
   }
 }

@@ -1,71 +1,64 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { IonicModule, ToastController, LoadingController } from '@ionic/angular';
 import { FormsModule } from '@angular/forms';
-import { IonicModule, ToastController } from '@ionic/angular';
-import { Router, RouterLink } from '@angular/router';
-import { AuthService } from '../../servicios/auth'; 
+import { Router, RouterModule } from '@angular/router';
+import { AuthService } from '../../servicios/auth';
 
 @Component({
-  selector: 'app-registro',
-  templateUrl: './registro.page.html',
-  styleUrls: ['./registro.page.scss'],
+  selector: 'app-register',
+  templateUrl: './register.component.html',
   standalone: true,
-  imports: [IonicModule, CommonModule, FormsModule, RouterLink]
+  imports: [IonicModule, CommonModule, FormsModule, RouterModule]
 })
-export class RegistroPage implements OnInit {
-  username = '';
-  email = '';
-  password = '';
-  confirmPassword = '';
-  cargando = false;
+export class RegisterComponent {
+  
+
+  datos = {
+    username: '',
+    email: '',
+    password: '',
+    avatar: ''
+  };
 
   constructor(
-    private authService: AuthService,
-    private router: Router,
-    private toastController: ToastController
-  ) { }
+    private authService: AuthService, 
+    private router: Router, 
+    private toastCtrl: ToastController,
+    private loadingCtrl: LoadingController
+  ) {}
 
-  ngOnInit() {
-  }
-
-  registrar() {
-    if (!this.username || !this.email || !this.password || !this.confirmPassword) {
-      this.mostrarMensaje('Por favor, rellena todos los campos');
+  async registrarse() {
+    
+    if (!this.datos.username || !this.datos.email || !this.datos.password) {
+      this.mostrarToast('Rellena todos los campos, anda');
       return;
     }
 
-    if (this.password !== this.confirmPassword) {
-      this.mostrarMensaje('Las contraseñas no coinciden');
-      return;
-    }
+    this.datos.avatar = `https://api.dicebear.com/7.x/pixel-art/svg?seed=${this.datos.username}`;
 
-    this.cargando = true;
+    const loading = await this.loadingCtrl.create({ message: 'Creando cuenta...' });
+    await loading.present();
 
-  
-    this.authService.registro({ 
-      username: this.username, 
-      email: this.email, 
-      password: this.password 
-    }).subscribe({
-      next: () => {
-        this.cargando = false;
-        this.mostrarMensaje('¡Fichaje completado con éxito!', 'success');
+    this.authService.register(this.datos).subscribe({
+      next: (res) => {
+        loading.dismiss();
         this.router.navigate(['/tabs/partidos']);
       },
       error: (err) => {
-        this.cargando = false;
-        this.mostrarMensaje(err.error?.error || 'Error al intentar registrarse');
+        loading.dismiss();
+        const msg = err.error?.message || 'Error al crear la cuenta';
+        this.mostrarToast(msg);
       }
     });
   }
 
-  async mostrarMensaje(mensaje: string, color: string = 'danger') {
-    const toast = await this.toastController.create({
+  async mostrarToast(mensaje: string) {
+    const toast = await this.toastCtrl.create({
       message: mensaje,
-      duration: 2500,
-      position: 'bottom',
-      color: color,
-      icon: color === 'success' ? 'checkmark-circle-outline' : 'alert-circle-outline'
+      duration: 2000,
+      color: 'danger',
+      position: 'bottom'
     });
     toast.present();
   }
