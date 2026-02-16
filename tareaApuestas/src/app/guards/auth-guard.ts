@@ -1,8 +1,10 @@
-import { Injectable } from '@angular/core';
+import { inject } from '@angular/core';
+import { CanActivateFn, Router } from '@angular/router';
+import { from } from 'rxjs';
+import { map } from 'rxjs/operators';
+import { AuthService } from '../servicios/auth';
 
-@Injectable({
-  providedIn: 'root',
-})
+
 export class AuthGuard {
   
 }

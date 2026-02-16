@@ -14,6 +14,7 @@ import { AuthService } from '../../servicios/auth';
 })
 export class RegistroPage implements OnInit {
   username = '';
+  email = '';
   password = '';
   confirmPassword = '';
   cargando = false;
@@ -28,12 +29,11 @@ export class RegistroPage implements OnInit {
   }
 
   registrar() {
-    if (!this.username || !this.password || !this.confirmPassword) {
+    if (!this.username || !this.email || !this.password || !this.confirmPassword) {
       this.mostrarMensaje('Por favor, rellena todos los campos');
       return;
     }
 
-   
     if (this.password !== this.confirmPassword) {
       this.mostrarMensaje('Las contraseñas no coinciden');
       return;
@@ -41,7 +41,12 @@ export class RegistroPage implements OnInit {
 
     this.cargando = true;
 
-    this.authService.registro({ username: this.username, password: this.password }).subscribe({
+  
+    this.authService.registro({ 
+      username: this.username, 
+      email: this.email, 
+      password: this.password 
+    }).subscribe({
       next: () => {
         this.cargando = false;
         this.mostrarMensaje('¡Fichaje completado con éxito!', 'success');

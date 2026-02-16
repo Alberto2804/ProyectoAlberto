@@ -8,7 +8,7 @@ import { Subscription, interval } from 'rxjs';
 import { FutbolService } from '../../servicios/futbol'; 
 import { ApuestasService } from '../../servicios/apuestas';
 import { AuthService } from '../../servicios/auth';
-import { Partido, Usuario } from '../../modelos/interfaces';
+import { Partido, Usuario,Clasificacion } from '../../modelos/interfaces';
 
 @Component({
   selector: 'app-detalle-partido',
@@ -19,7 +19,8 @@ import { Partido, Usuario } from '../../modelos/interfaces';
 })
 export class DetallePartidoPage implements OnInit, OnDestroy {
   matchId!: number;
-  partido: Partido | undefined;
+  partido?: Partido;
+  clasificacion: Clasificacion[] = [];
   usuarioActual: Usuario | null = null;
   cargando = true;
 
@@ -63,38 +64,42 @@ export class DetallePartidoPage implements OnInit, OnDestroy {
     this.futbolService.getPartidos().subscribe(partidos => {
       this.partido = partidos.find(p => p.id === this.matchId);
       if (mostrarCarga) this.cargando = false;
+
+      this.futbolService.getClasificacion().subscribe((tabla) => (this.clasificacion = tabla));
     });
   }
 
   enviarApuesta() {
-    if (this.apuestaLocal === null || this.apuestaVisitante === null) {
+    if (this.apuestaLocal === null || this.apuestaVisitante === null || !this.usuarioActual) {
       this.mostrarToast('Introduce un resultado válido', 'warning');
       return;
     }
 
-    if (!this.usuarioActual) return;
 
     this.enviandoApuesta = true;
-    const apuestaData = {
-      userId: this.usuarioActual.id,
-      matchId: this.matchId,
-      homeScore: this.apuestaLocal,
-      awayScore: this.apuestaVisitante
-    };
-
-    this.apuestasService.realizarApuesta(apuestaData).subscribe({
-      next: () => {
-        this.enviandoApuesta = false;
-        this.mostrarToast('¡Apuesta registrada con éxito!', 'success');
-        this.apuestaLocal = null;
-        this.apuestaVisitante = null;
-      },
-      error: (err) => {
-        this.enviandoApuesta = false;
-        this.mostrarToast(err.error?.error || 'Error al enviar apuesta', 'danger');
-      }
-    });
+    this.apuestasService
+      .realizarApuesta({
+        userId: this.usuarioActual.id,
+        matchId: this.matchId,
+        homeScore: this.apuestaLocal,
+        awayScore: this.apuestaVisitante
+      })
+      .subscribe({
+        next: () => {
+          this.enviandoApuesta = false;
+          this.mostrarToast('¡Apuesta registrada!', 'success');
+          this.apuestaLocal = null;
+          this.apuestaVisitante = null;
+        },
+        error: (err) => {
+          this.enviandoApuesta = false;
+          this.mostrarToast(err.error?.error || 'Error al enviar apuesta', 'danger');
+        }
+      });
   }
+
+  
+
 
   formatearEscudo(nombreEquipo: string): string {
     if (!nombreEquipo) return 'default';

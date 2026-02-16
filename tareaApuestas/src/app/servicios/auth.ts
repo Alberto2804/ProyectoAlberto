@@ -33,7 +33,8 @@ export class AuthService {
   }
 
 
-  login(credenciales: { username: string; password: string }): Observable<AuthResponse> {
+
+  login(credenciales: { email: string; password: string }): Observable<AuthResponse> {
     return this.http.post<AuthResponse>(`${this.apiUrl}/login`, credenciales).pipe(
       switchMap(async (res) => {
         await this.guardarSesion(res.token, res.user);
@@ -43,8 +44,8 @@ export class AuthService {
     );
   }
 
- 
-  registro(credenciales: { username: string; password: string }): Observable<AuthResponse> {
+  
+  registro(credenciales: { username: string; email: string; password: string }): Observable<AuthResponse> {
     return this.http.post<AuthResponse>(`${this.apiUrl}/register`, credenciales).pipe(
       switchMap(async (res) => {
         await this.guardarSesion(res.token, res.user);

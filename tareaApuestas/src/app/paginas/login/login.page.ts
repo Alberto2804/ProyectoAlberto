@@ -13,7 +13,7 @@ import { AuthService } from '../../servicios/auth';
   imports: [IonicModule, CommonModule, FormsModule, RouterLink]
 })
 export class LoginPage implements OnInit {
-  username = '';
+  email = '';
   password = '';
   cargando = false;
 
@@ -26,21 +26,21 @@ export class LoginPage implements OnInit {
   ngOnInit() {}
 
   login() {
-    if (!this.username || !this.password) {
+    if (!this.email || !this.password) {
       this.mostrarMensaje('Por favor, rellena todos los campos');
       return;
     }
 
     this.cargando = true;
     
-    this.authService.login({ username: this.username, password: this.password }).subscribe({
+    this.authService.login({ email: this.email, password: this.password }).subscribe({
       next: () => {
         this.cargando = false;
         this.router.navigate(['/tabs/partidos']);
       },
       error: (err) => {
         this.cargando = false;
-        this.mostrarMensaje(err.error?.error || 'Usuario o contraseña incorrectos');
+        this.mostrarMensaje(err.error?.error || 'Correo o contraseña incorrectos');
       }
     });
   }
@@ -48,7 +48,7 @@ export class LoginPage implements OnInit {
   async mostrarMensaje(mensaje: string) {
     const toast = await this.toastController.create({
       message: mensaje,
-      duration: 2500,
+      duration: 2200,
       position: 'bottom',
       color: 'danger',
       icon: 'alert-circle-outline'
