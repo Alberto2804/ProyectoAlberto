@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { IonicModule } from '@ionic/angular';
-import { RouterLink } from '@angular/router';
+import { Router } from '@angular/router';
 import { FutbolService } from '../../servicios/futbol';
 import { Clasificacion } from '../../modelos/interfaces';
 
@@ -10,49 +10,27 @@ import { Clasificacion } from '../../modelos/interfaces';
   templateUrl: './clasificacion.page.html',
   styleUrls: ['./clasificacion.page.scss'],
   standalone: true,
-  imports: [IonicModule, CommonModule, RouterLink]
+  imports: [IonicModule, CommonModule]
 })
 export class ClasificacionPage implements OnInit {
   clasificacion: Clasificacion[] = [];
-  cargando = true;
 
-  constructor(private futbolService: FutbolService) { }
+  constructor(private futbolService: FutbolService, private router: Router) { }
 
   ngOnInit() {
     this.cargarClasificacion();
   }
 
-  ionViewWillEnter() {
-    this.cargarClasificacion(false);
+  cargarClasificacion() {
+    this.futbolService.getClasificacion().subscribe(data => this.clasificacion = data);
   }
 
-  cargarClasificacion(mostrarCarga = true) {
-    if (mostrarCarga) this.cargando = true;
-
-    this.futbolService.getClasificacion().subscribe({
-      next: (data) => {
-        this.clasificacion = data;
-        this.cargando = false;
-      },
-      error: (err) => {
-        console.error('Error cargando la clasificación', err);
-        this.cargando = false;
-      }
-    });
+  obtenerEscudo(nombre: string): string {
+    const nombreLimpio = nombre.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/\s+/g, '-');
+    return `assets/escudos/${nombreLimpio}.png`;
   }
 
-  recargarManual(event: any) {
-    this.futbolService.getClasificacion().subscribe({
-      next: (data) => {
-        this.clasificacion = data;
-        event.target.complete();
-      },
-      error: () => event.target.complete()
-    });
-  }
-
-  formatearEscudo(nombreEquipo: string): string {
-    if (!nombreEquipo) return 'default';
-    return nombreEquipo.toLowerCase().replace(/\s+/g, '-');
+  verDetalleEquipo(nombreEquipo: string) {
+    this.router.navigate(['/detalle-equipo', nombreEquipo]);
   }
 }

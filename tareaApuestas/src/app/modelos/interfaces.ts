@@ -1,7 +1,8 @@
-
 export interface Usuario {
   id: number;
   username: string;
+  email?: string;
+  avatar?: string;
   points: number;
 }
 
@@ -19,6 +20,21 @@ export interface Partido {
   status: 'pending' | 'live' | 'finished'; 
   minute: number;
   startTime: string | Date;
+  home?: string;
+  away?: string;
+  time?: string | Date;
+  jornada?: number;
+  league?: string;
+  events?: EventoPartido[];
+}
+
+export interface EventoPartido {
+  id?: number;
+  matchId: number;
+  type: string;
+  minute: number;
+  player: string;
+  team: string; 
 }
 
 export interface Equipo {
@@ -54,13 +70,4 @@ export interface Apuesta {
   awayScore: number;
   pointsEarned?: number;
   status?: 'pending' | 'resolved';
-}
-
-
-export interface MensajeChat {
-  id?: number;
-  matchId: number;
-  username: string;
-  message: string;
-  timestamp?: string | Date;
 }

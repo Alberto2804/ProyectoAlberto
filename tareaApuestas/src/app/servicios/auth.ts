@@ -1,76 +1,52 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { environment } from 'src/environments/environment';
 import { Preferences } from '@capacitor/preferences';
-import { BehaviorSubject, Observable, from } from 'rxjs';
-import { tap, switchMap } from 'rxjs/operators';
-import { AuthResponse, Usuario } from '../modelos/interfaces';
+import { environment } from '../../environments/environment';
+import { BehaviorSubject, Observable } from 'rxjs';
+import { tap } from 'rxjs/operators';
 
-@Injectable({
-  providedIn: 'root'
-})
+const TOKEN_KEY = 'jwt-token';
+
+@Injectable({ providedIn: 'root' })
 export class AuthService {
-  private apiUrl = environment.apiUrl;
-  
+  private urlApi = environment.urlApi;
+  private authState = new BehaviorSubject<boolean>(false);
 
-  private usuarioLogueado = new BehaviorSubject<Usuario | null>(null);
+  constructor(private http: HttpClient) { this.checkToken(); }
 
-  constructor(private http: HttpClient) {
-    this.cargarSesionInicial();
+  async checkToken() {
+    const { value } = await Preferences.get({ key: TOKEN_KEY });
+    this.authState.next(!!value);
   }
 
-  private async cargarSesionInicial() {
-    const tokenData = await Preferences.get({ key: 'auth-token' });
-    const userData = await Preferences.get({ key: 'user-data' });
-    
-    if (tokenData.value && userData.value) {
-      this.usuarioLogueado.next(JSON.parse(userData.value));
-    }
-  }
+  isAuthenticated(): Observable<boolean> { return this.authState.asObservable(); }
 
-  get usuario$() {
-    return this.usuarioLogueado.asObservable();
-  }
-
-
-
-  login(credenciales: { email: string; password: string }): Observable<AuthResponse> {
-    return this.http.post<AuthResponse>(`${this.apiUrl}/login`, credenciales).pipe(
-      switchMap(async (res) => {
-        await this.guardarSesion(res.token, res.user);
-        this.usuarioLogueado.next(res.user);
-        return res;
-      })
-    );
-  }
-
-  
-  registro(credenciales: { username: string; email: string; password: string }): Observable<AuthResponse> {
-    return this.http.post<AuthResponse>(`${this.apiUrl}/register`, credenciales).pipe(
-      switchMap(async (res) => {
-        await this.guardarSesion(res.token, res.user);
-        this.usuarioLogueado.next(res.user);
-        return res;
-      })
-    );
-  }
-
-  
-  private async guardarSesion(token: string, user: Usuario) {
-    await Preferences.set({ key: 'auth-token', value: token });
-    await Preferences.set({ key: 'user-data', value: JSON.stringify(user) });
-  }
-
- 
   async getToken(): Promise<string | null> {
-    const { value } = await Preferences.get({ key: 'auth-token' });
+    const { value } = await Preferences.get({ key: TOKEN_KEY });
     return value;
   }
 
- 
+  login(credentials: any): Observable<any> {
+    return this.http.post(`${this.urlApi}/login`, credentials).pipe(
+      tap(async (res: any) => {
+        if (res && res.token) {
+          await Preferences.set({ key: TOKEN_KEY, value: res.token });
+          this.authState.next(true);
+        }
+      })
+    );
+  }
+
+  register(user: any): Observable<any> {
+    return this.http.post(`${this.urlApi}/register`, user);
+  }
+
+  obtenerPerfil(): Observable<any> {
+    return this.http.get(`${this.urlApi}/profile`);
+  }
+
   async logout() {
-    await Preferences.remove({ key: 'auth-token' });
-    await Preferences.remove({ key: 'user-data' });
-    this.usuarioLogueado.next(null);
+    await Preferences.remove({ key: TOKEN_KEY });
+    this.authState.next(false);
   }
 }

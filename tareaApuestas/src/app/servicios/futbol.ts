@@ -1,33 +1,15 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { environment } from 'src/environments/environment';
+import { environment } from '../../environments/environment';
 import { Observable } from 'rxjs';
-import { Partido, Clasificacion, Equipo, Jugador,Usuario } from '../modelos/interfaces';
 
-@Injectable({
-  providedIn: 'root'
-})
-export class FutbolService {
-  private apiUrl = environment.apiUrl;
-
+@Injectable({ providedIn: 'root' })
+export class SoccerService {
+  private urlApi = environment.apiUrl;
   constructor(private http: HttpClient) {}
 
- 
-  getPartidos(): Observable<Partido[]> {
-    return this.http.get<Partido[]>(`${this.apiUrl}/matches`);
-  }
-
-
-  getClasificacion(): Observable<Clasificacion[]> {
-    return this.http.get<Clasificacion[]>(`${this.apiUrl}/league/standings`);
-  }
-
- 
-  getJugadores(nombreEquipo: string): Observable<Jugador[]> {
-    return this.http.get<Jugador[]>(`${this.apiUrl}/teams/${nombreEquipo}/players`);
-  }
-
-  getRanking(): Observable<Usuario[]> {
-    return this.http.get<Usuario[]>(`${this.apiUrl}/leaderboard`);
-  }
+  getMatches(): Observable<any[]> { return this.http.get<any[]>(`${this.urlApi}/matches`); }
+  getStandings(): Observable<any[]> { return this.http.get<any[]>(`${this.urlApi}/league/standings`); }
+  getLeaderboard(): Observable<any[]> { return this.http.get<any[]>(`${this.urlApi}/leaderboard`); }
+  getTeamPlayers(teamName: string): Observable<any[]> { return this.http.get<any[]>(`${this.urlApi}/teams/${teamName}/players`); }
 }

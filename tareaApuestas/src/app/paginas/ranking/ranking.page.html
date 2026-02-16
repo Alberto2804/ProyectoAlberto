@@ -1,55 +1,24 @@
 <ion-header class="ion-no-border">
-  <ion-toolbar color="primary">
-    <ion-buttons slot="start">
-      <ion-menu-button></ion-menu-button>
-    </ion-buttons>
-    <ion-title>Ranking Tipsters</ion-title>
+  <ion-toolbar class="cabecera-oscura">
+    <ion-title color="light">Top Tipsters</ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content color="light">
-  <ion-refresher slot="fixed" (ionRefresh)="recargarManual($event)">
-    <ion-refresher-content></ion-refresher-content>
-  </ion-refresher>
-
-  <div class="loading-container" *ngIf="cargando">
-    <ion-spinner name="bubbles" color="primary"></ion-spinner>
-    <p>Calculando puntuaciones...</p>
-  </div>
-
-  <div class="ranking-container" *ngIf="!cargando && usuarios.length > 0">
-    <ion-list lines="none" class="ranking-list">
-      
-      <ion-item *ngFor="let user of usuarios; let i = index" 
-                class="ranking-item" 
-                [ngClass]="'pos-' + (i + 1)"> <div slot="start" class="position-badge">
-          <ion-icon name="medal" *ngIf="i === 0" class="gold"></ion-icon>
-          <ion-icon name="medal" *ngIf="i === 1" class="silver"></ion-icon>
-          <ion-icon name="medal" *ngIf="i === 2" class="bronze"></ion-icon>
-          <span *ngIf="i > 2">{{ i + 1 }}</span>
-        </div>
-
-        <ion-avatar slot="start" class="user-avatar">
-          <img [src]="'https://ui-avatars.com/api/?name=' + user.username + '&background=random&color=fff&bold=true'" alt="avatar">
-        </ion-avatar>
-
-        <ion-label>
-          <h2 class="username">{{ user.username }}</h2>
-          <p class="tipster-title" *ngIf="i === 0">🏆 El Mejor de la Clase</p>
-        </ion-label>
-
-        <div slot="end" class="points-container">
-          <span class="points">{{ user.points }}</span>
-          <span class="pts-label">pts</span>
-        </div>
-
-      </ion-item>
-
-    </ion-list>
-  </div>
-
-  <div class="empty-state" *ngIf="!cargando && usuarios.length === 0">
-    <ion-icon name="people-circle-outline"></ion-icon>
-    <p>Aún no hay usuarios en la liga</p>
+<ion-content class="fondo-app">
+  <div class="contenedor-principal">
+    <ion-card class="tarjeta-modulo">
+      <ion-list style="background: transparent; padding: 0;">
+        <ion-item *ngFor="let user of usuarios; let i = index" lines="full" color="dark">
+          <div slot="start" style="font-weight: bold; font-size: 1.2rem; width: 30px; text-align: center;" 
+               [ngStyle]="{'color': i === 0 ? '#fbbf24' : (i === 1 ? '#9ca3af' : (i === 2 ? '#b45309' : '#4ade80'))}">
+            {{ i + 1 }}
+          </div>
+          <ion-label style="color: white; font-weight: bold;">
+            {{ user.username }}
+          </ion-label>
+          <ion-badge slot="end" color="success">{{ user.points }} pts</ion-badge>
+        </ion-item>
+      </ion-list>
+    </ion-card>
   </div>
 </ion-content>

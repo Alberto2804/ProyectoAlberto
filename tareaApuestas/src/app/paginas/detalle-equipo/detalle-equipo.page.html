@@ -1,76 +1,27 @@
 <ion-header class="ion-no-border">
-  <ion-toolbar color="primary">
+  <ion-toolbar class="cabecera-oscura">
     <ion-buttons slot="start">
-      <ion-back-button defaultHref="/tabs/clasificacion"></ion-back-button>
+      <ion-back-button defaultHref="/app/clasificacion" color="light"></ion-back-button>
     </ion-buttons>
-    <ion-title>{{ nombreEquipo }}</ion-title>
+    <ion-title color="light">Plantilla</ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content color="light">
-  
-  <div class="loading-center" *ngIf="cargando">
-    <ion-spinner name="crescent" color="primary"></ion-spinner>
-  </div>
-
-  <div *ngIf="!cargando && equipo">
-    
-    <div class="team-hero">
-      <img [src]="'assets/escudos/' + formatearEscudo(equipo.name) + '.png'" 
-           onerror="this.src='assets/icon/favicon.png'" class="team-shield">
-      <h2>{{ equipo.name }}</h2>
-      
-      <div class="team-stats-grid">
-        <div class="stat-box">
-          <span class="stat-value">{{ equipo.points }}</span>
-          <span class="stat-label">PTS</span>
-        </div>
-        <div class="stat-box">
-          <span class="stat-value">{{ equipo.played }}</span>
-          <span class="stat-label">PJ</span>
-        </div>
-        <div class="stat-box text-success">
-          <span class="stat-value">{{ equipo.won }}</span>
-          <span class="stat-label">V</span>
-        </div>
-        <div class="stat-box text-warning">
-          <span class="stat-value">{{ equipo.drawn }}</span>
-          <span class="stat-label">E</span>
-        </div>
-        <div class="stat-box text-danger">
-          <span class="stat-value">{{ equipo.lost }}</span>
-          <span class="stat-label">D</span>
-        </div>
-      </div>
+<ion-content class="fondo-app">
+  <div class="contenedor-principal">
+    <div class="marcador-destacado" style="display: flex; flex-direction: column; align-items: center;">
+      <img [src]="obtenerEscudo()" style="width: 100px; margin-bottom: 10px;" onerror="this.src='assets/icon/favicon.png'">
+      <h2 style="color: white; margin: 0;">{{ nombreEquipo }}</h2>
     </div>
 
-    <div class="roster-section">
-      <h3><ion-icon name="people-outline"></ion-icon> Plantilla Oficial</h3>
-
-      <ion-list class="roster-list" lines="none">
-        <ion-item *ngFor="let jugador of jugadores" class="player-item">
-          
-          <ion-avatar slot="start" class="player-avatar">
-            <img [src]="'https://ui-avatars.com/api/?name=' + jugador.name + '&background=f4f5f8&color=333'" alt="avatar">
-          </ion-avatar>
-          
-          <ion-label>
-            <h2>{{ jugador.name }}</h2>
-            <p>Fuerza del equipo: {{ equipo.strength }}</p>
-          </ion-label>
-          
-          <div slot="end" class="goals-badge" *ngIf="jugador.goals > 0">
-            <ion-icon name="football"></ion-icon>
-            <span>{{ jugador.goals }}</span>
-          </div>
-
-        </ion-item>
-      </ion-list>
-
-      <div class="empty-roster" *ngIf="jugadores.length === 0">
-        <p>No hay datos de jugadores para este equipo.</p>
-      </div>
-    </div>
-
+    <ion-list style="background: transparent;">
+      <ion-item *ngFor="let jugador of jugadores" lines="full" color="dark">
+        <ion-icon name="person-circle-outline" slot="start" color="success"></ion-icon>
+        <ion-label style="color: white;">
+          <h2>{{ jugador.name }}</h2>
+          <p style="color: #a0aec0;">Posición: {{ jugador.position }} | Nivel: {{ jugador.skill }}</p>
+        </ion-label>
+      </ion-item>
+    </ion-list>
   </div>
 </ion-content>

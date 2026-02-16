@@ -1,102 +1,157 @@
-.loading-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  height: 60vh;
-  color: var(--ion-color-medium);
+ion-content.fondo-app {
+  --background: #0d1b11;
+}
+
+.cabecera-oscura {
+  --background: #0d1b11;
+  --color: white;
   
-  ion-spinner {
-    transform: scale(1.5);
-    margin-bottom: 15px;
+  .titulo-centrado {
+    text-align: center;
+    font-weight: 800;
+    font-size: 1.4rem;
+    letter-spacing: 1px;
+    padding-top: 10px;
   }
 }
 
-.table-card {
-  background: white;
-  margin: 16px;
-  border-radius: 12px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
-  overflow: hidden;
+.contenedor-principal {
+  padding: 15px;
+  padding-bottom: 30px;
 }
 
-.table-responsive {
-  overflow-x: auto; // Permite deslizar la tabla hacia la derecha en móviles pequeños
+// -- Contenedor de la Tabla --
+.tabla-contenedor {
+  background: rgba(20, 40, 25, 0.8);
+  border-radius: 16px;
+  border: 1px solid rgba(74, 222, 128, 0.1);
+  overflow-x: auto; // Permite scroll horizontal en pantallas muy estrechas
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
 }
 
-.standings-table {
+.tabla-clasificacion {
   width: 100%;
   border-collapse: collapse;
-  white-space: nowrap; // Evita que el texto salte de línea
+  color: white;
   font-size: 0.9rem;
 
-  th {
-    background-color: #f8f9fa;
-    color: var(--ion-color-medium);
-    font-weight: 600;
-    padding: 12px 8px;
-    text-align: center;
-    border-bottom: 2px solid #edf2f7;
-    font-size: 0.8rem;
-  }
-
-  td {
-    padding: 12px 8px;
-    text-align: center;
-    border-bottom: 1px solid #edf2f7;
-    color: var(--ion-color-dark);
-  }
-
-  .text-left {
-    text-align: left;
-  }
-
-  .team-col {
-    min-width: 140px;
-  }
-
-  .team-row {
-    transition: background-color 0.2s;
-    cursor: pointer;
-
-    &:active, &:hover {
-      background-color: #f4f5f8;
-    }
-  }
-
-  .position {
-    font-weight: bold;
-    color: var(--ion-color-medium);
-    border-left: 3px solid transparent; // Borde invisible por defecto
+  thead {
+    background: rgba(0, 0, 0, 0.6); // Cabecera más oscura
     
-    &.champions {
-      border-left-color: var(--ion-color-success);
-    }
-    
-    &.relegation {
-      border-left-color: var(--ion-color-danger);
-    }
-  }
-
-  .team-info {
-    display: flex;
-    align-items: center;
-
-    img {
-      width: 24px;
-      height: 24px;
-      object-fit: contain;
-      margin-right: 10px;
-    }
-
-    .team-name {
+    th {
+      padding: 15px 10px;
+      color: #a0aec0;
       font-weight: 600;
+      text-transform: uppercase;
+      font-size: 0.75rem;
+      text-align: center;
+
+      &.col-equipo {
+        text-align: left;
+      }
     }
   }
 
-  .points-col {
-    font-weight: 800;
-    color: var(--ion-color-primary);
-    font-size: 1rem;
+  tbody {
+    tr {
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      transition: background 0.2s ease;
+
+      // Filas alternas para mejor visibilidad
+      &:nth-child(even) {
+        background: rgba(255, 255, 255, 0.02);
+      }
+
+      // Efecto hover y clic
+      &:hover, &:active {
+        background: rgba(74, 222, 128, 0.1);
+        cursor: pointer;
+      }
+
+      &:last-child {
+        border-bottom: none;
+      }
+    }
+
+    td {
+      padding: 12px 10px;
+      text-align: center;
+      vertical-align: middle;
+
+      &.col-equipo {
+        text-align: left;
+      }
+    }
+  }
+}
+
+// -- Estilos específicos de celdas --
+.posicion {
+  font-weight: bold;
+  color: #a0aec0;
+  width: 40px;
+
+  span {
+    display: inline-block;
+    width: 26px;
+    height: 26px;
+    line-height: 26px;
+    border-radius: 50%;
+    text-align: center;
+    font-size: 0.85rem;
+
+    // Colores para competiciones europeas y descenso
+    &.top-4 {
+      background: rgba(59, 130, 246, 0.2); 
+      color: #60a5fa;
+      border: 1px solid rgba(59, 130, 246, 0.4);
+    }
+
+    &.descenso {
+      background: rgba(239, 68, 68, 0.2); 
+      color: #f87171;
+      border: 1px solid rgba(239, 68, 68, 0.4);
+    }
+  }
+}
+
+.equipo-info {
+  display: flex;
+  align-items: center;
+
+  .escudo-mini {
+    width: 28px;
+    height: 28px;
+    object-fit: contain;
+    margin-right: 12px;
+    filter: drop-shadow(0px 1px 3px rgba(0,0,0,0.5));
+  }
+
+  .nombre-equipo {
+    font-weight: 600;
+    white-space: nowrap; // Evita que nombres largos salten de línea
+  }
+}
+
+.puntos {
+  color: #fbbf24; // Amarillo oro
+  font-weight: 800;
+  font-size: 1.05rem;
+  background: rgba(251, 191, 36, 0.05); // Resalta un poco la columna de puntos
+}
+
+.stat {
+  color: #cbd5e1;
+  font-size: 0.85rem;
+}
+
+.cargando-vacio {
+  padding: 40px;
+  text-align: center;
+  color: #a0aec0;
+  
+  ion-spinner {
+    margin-bottom: 15px;
+    color: #4ade80;
   }
 }

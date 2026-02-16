@@ -1,67 +1,67 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { IonicModule } from '@ionic/angular';
-import { RouterLink } from '@angular/router';
-import { Subscription, interval } from 'rxjs';
-import { FutbolService } from '../../servicios/futbol'; 
-import { Partido } from '../../modelos/interfaces';
+import { Router } from '@angular/router';
+import { FutbolService } from '../../servicios/futbol';
+import { AuthService } from '../../servicios/auth';
+import { Partido, Usuario } from '../../modelos/interfaces';
 
 @Component({
   selector: 'app-partidos',
   templateUrl: './partidos.page.html',
   styleUrls: ['./partidos.page.scss'],
   standalone: true,
-  imports: [IonicModule, CommonModule, RouterLink]
+  imports: [IonicModule, CommonModule]
 })
 export class PartidosPage implements OnInit, OnDestroy {
   partidos: Partido[] = [];
-  cargando = true;
-  timerSuscripcion!: Subscription;
+  usuario: Usuario | null = null;
+  intervaloRecarga: any;
 
-  constructor(private futbolService: FutbolService) { }
+  constructor(
+    private futbolService: FutbolService,
+    private authService: AuthService,
+    private router: Router
+  ) {}
 
   ngOnInit() {
-    this.cargarPartidos();
-    this.timerSuscripcion = interval(10000).subscribe(() => {
-      this.cargarPartidos(false);
-    });
+    this.cargarDatos();
+    
+   
+    this.intervaloRecarga = setInterval(() => {
+      this.cargarPartidos();
+    }, 10000);
   }
 
   ngOnDestroy() {
-    if (this.timerSuscripcion) {
-      this.timerSuscripcion.unsubscribe();
+    if (this.intervaloRecarga) {
+      clearInterval(this.intervaloRecarga);
     }
   }
 
-  cargarPartidos(mostrarCarga = true) {
-    if (mostrarCarga) this.cargando = true;
-    
+  cargarDatos() {
+    this.authService.obtenerPerfil().subscribe({
+      next: (perfil) => this.usuario = perfil,
+      error: (err) => console.error('Error cargando perfil', err)
+    });
+
+    this.cargarPartidos();
+  }
+
+  cargarPartidos() {
     this.futbolService.getPartidos().subscribe({
-      next: (data) => {
-        this.partidos = data;
-        this.cargando = false;
-      },
-      error: (err) => {
-        console.error('Error cargando la jornada', err);
-        this.cargando = false;
-      }
+      next: (data) => this.partidos = data,
+      error: (err) => console.error('Error cargando partidos', err)
     });
   }
 
- 
-  recargarManual(event: any) {
-    this.futbolService.getPartidos().subscribe({
-      next: (data) => {
-        this.partidos = data;
-        event.target.complete();
-      },
-      error: () => event.target.complete()
-    });
+  obtenerEscudo(nombreEquipo: string): string {
+    if (!nombreEquipo) return 'assets/escudos/default.png';
+    const nombreLimpio = nombreEquipo.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/\s+/g, '-');
+    return `assets/escudos/${nombreLimpio}.png`;
   }
 
-  // Transforma "Real Madrid" en "real-madrid" para buscar su escudo en la carpeta assets
-  formatearEscudo(nombreEquipo: string): string {
-    if (!nombreEquipo) return 'default';
-    return nombreEquipo.toLowerCase().replace(/\s+/g, '-');
+  irDetallePartido(id: number) {
+    this.router.navigate(['/detalle-partido', id]);
   }
 }

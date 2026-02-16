@@ -1,14 +1,11 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { FormsModule } from '@angular/forms'; // MUY IMPORTANTE para usar ngModel en los sliders
 import { IonicModule, ToastController } from '@ionic/angular';
 import { ActivatedRoute } from '@angular/router';
-import { Subscription, interval } from 'rxjs';
-
-import { FutbolService } from '../../servicios/futbol'; 
-import { ApuestasService } from '../../servicios/apuestas';
-import { AuthService } from '../../servicios/auth';
-import { Partido, Usuario,Clasificacion } from '../../modelos/interfaces';
+import { SoccerService } from '../../servicios/futbol';
+import { BetService } from '../../servicios/apuestas';
+import { Partido } from '../../modelos/interfaces';
 
 @Component({
   selector: 'app-detalle-partido',
@@ -18,101 +15,84 @@ import { Partido, Usuario,Clasificacion } from '../../modelos/interfaces';
   imports: [IonicModule, CommonModule, FormsModule]
 })
 export class DetallePartidoPage implements OnInit, OnDestroy {
-  matchId!: number;
-  partido?: Partido;
-  clasificacion: Clasificacion[] = [];
-  usuarioActual: Usuario | null = null;
-  cargando = true;
+  idPartido!: number;
+  partido: Partido | null = null;
+  intervaloRecarga: any;
 
-  apuestaLocal: number | null = null;
-  apuestaVisitante: number | null = null;
-  enviandoApuesta = false;
-
-  refreshTimer!: Subscription;
+  // Variables para los deslizadores de apuestas
+  golesLocal: number = 0;
+  golesVisitante: number = 0;
+  enviandoApuesta: boolean = false;
 
   constructor(
     private route: ActivatedRoute,
-    private futbolService: FutbolService,
-    private apuestasService: ApuestasService,
-    private authService: AuthService,
-    private toastCtrl: ToastController
-  ) { }
+    private futbolService: SoccerService,
+    private apuestasService: BetService,
+    private toastController: ToastController
+  ) {}
 
   ngOnInit() {
-    this.matchId = Number(this.route.snapshot.paramMap.get('id'));
-    
-    this.authService.usuario$.subscribe(user => {
-      this.usuarioActual = user;
-    });
+    this.idPartido = Number(this.route.snapshot.paramMap.get('id'));
+    this.cargarPartido();
 
-    this.cargarDatos(true);
-
-    this.refreshTimer = interval(5000).subscribe(() => {
-      this.cargarDatos(false);
-    });
+    this.intervaloRecarga = setInterval(() => {
+      this.cargarPartido();
+    }, 10000);
   }
 
   ngOnDestroy() {
-    if (this.refreshTimer) {
-      this.refreshTimer.unsubscribe();
+    if (this.intervaloRecarga) {
+      clearInterval(this.intervaloRecarga);
     }
   }
 
-  cargarDatos(mostrarCarga: boolean) {
-    if (mostrarCarga) this.cargando = true;
-
-    this.futbolService.getPartidos().subscribe(partidos => {
-      this.partido = partidos.find(p => p.id === this.matchId);
-      if (mostrarCarga) this.cargando = false;
-
-      this.futbolService.getClasificacion().subscribe((tabla) => (this.clasificacion = tabla));
+  cargarPartido() {
+    this.Service.getPartidos().subscribe({
+      next: (partidos) => {
+        const encontrado = partidos.find(p => p.id === this.idPartido);
+        if (encontrado) {
+          this.partido = encontrado;
+        }
+      },
+      error: (err) => console.error('Error cargando partido', err)
     });
   }
 
   enviarApuesta() {
-    if (this.apuestaLocal === null || this.apuestaVisitante === null || !this.usuarioActual) {
-      this.mostrarToast('Introduce un resultado válido', 'warning');
-      return;
-    }
-
+    if (!this.partido) return;
 
     this.enviandoApuesta = true;
-    this.apuestasService
-      .realizarApuesta({
-        userId: this.usuarioActual.id,
-        matchId: this.matchId,
-        homeScore: this.apuestaLocal,
-        awayScore: this.apuestaVisitante
-      })
-      .subscribe({
-        next: () => {
-          this.enviandoApuesta = false;
-          this.mostrarToast('¡Apuesta registrada!', 'success');
-          this.apuestaLocal = null;
-          this.apuestaVisitante = null;
-        },
-        error: (err) => {
-          this.enviandoApuesta = false;
-          this.mostrarToast(err.error?.error || 'Error al enviar apuesta', 'danger');
-        }
-      });
+    const datosApuesta = {
+      matchId: this.partido.id,
+      homeScore: this.golesLocal,
+      awayScore: this.golesVisitante
+    };
+
+    this.apuestasService.realizarApuesta(datosApuesta).subscribe({
+      next: () => {
+        this.mostrarMensaje('¡Apuesta registrada con éxito!', 'success');
+        this.enviandoApuesta = false;
+      },
+      error: (err) => {
+        this.mostrarMensaje(err.error?.error || 'Error al realizar la apuesta', 'danger');
+        this.enviandoApuesta = false;
+      }
+    });
   }
 
-  
-
-
-  formatearEscudo(nombreEquipo: string): string {
-    if (!nombreEquipo) return 'default';
-    return nombreEquipo.toLowerCase().replace(/\s+/g, '-');
-  }
-
-  async mostrarToast(mensaje: string, color: string) {
-    const toast = await this.toastCtrl.create({
+  async mostrarMensaje(mensaje: string, color: string) {
+    const toast = await this.toastController.create({
       message: mensaje,
       duration: 2500,
       color: color,
       position: 'top'
     });
     toast.present();
+  }
+
+  obtenerEscudo(nombreEquipo: string): string {
+    if (!nombreEquipo) return 'assets/escudos/default.png';
+    const nombreLimpio = nombreEquipo.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/\s+/g, '-');
+    return `assets/escudos/${nombreLimpio}.png`;
   }
 }

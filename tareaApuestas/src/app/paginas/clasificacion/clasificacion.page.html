@@ -1,66 +1,39 @@
 <ion-header class="ion-no-border">
-  <ion-toolbar color="primary">
-    <ion-buttons slot="start">
-      <ion-menu-button></ion-menu-button>
-    </ion-buttons>
-    <ion-title>Clasificación</ion-title>
+  <ion-toolbar class="cabecera-oscura">
+    <ion-title color="light">Clasificación</ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content color="light">
-  <ion-refresher slot="fixed" (ionRefresh)="recargarManual($event)">
-    <ion-refresher-content></ion-refresher-content>
-  </ion-refresher>
-
-  <div class="loading-container" *ngIf="cargando">
-    <ion-spinner name="bubbles" color="primary"></ion-spinner>
-    <p>Cargando la tabla...</p>
-  </div>
-
-  <div class="table-card" *ngIf="!cargando && clasificacion.length > 0">
-    <div class="table-responsive">
-      <table class="standings-table">
-        <thead>
-          <tr>
-            <th>#</th>
-            <th class="text-left team-col">Equipo</th>
-            <th>PTS</th>
-            <th>PJ</th>
-            <th>V</th>
-            <th>E</th>
-            <th>D</th>
-            <th>GF</th>
-            <th>GC</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let equipo of clasificacion; let i = index" 
-              [routerLink]="['/detalle-equipo', equipo.name]"
-              class="team-row">
-            
-            <td class="position" 
-                [ngClass]="{'champions': i < 4, 'relegation': i >= clasificacion.length - 3}">
-              {{ i + 1 }}
-            </td>
-            
-            <td class="text-left team-col">
-              <div class="team-info">
-                <img [src]="'assets/escudos/' + formatearEscudo(equipo.name) + '.png'" 
-                     onerror="this.src='assets/icon/favicon.png'" alt="escudo">
-                <span class="team-name">{{ equipo.name }}</span>
-              </div>
-            </td>
-            
-            <td class="points-col">{{ equipo.points }}</td>
-            <td>{{ equipo.played }}</td>
-            <td>{{ equipo.won }}</td>
-            <td>{{ equipo.drawn }}</td>
-            <td>{{ equipo.lost }}</td>
-            <td>{{ equipo.goalsFor }}</td>
-            <td>{{ equipo.goalsAgainst }}</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
+<ion-content class="fondo-app">
+  <div class="contenedor-principal">
+    <ion-card class="tarjeta-modulo">
+      <div class="contenido-modulo sin-padding">
+        <table class="tabla-clasificacion">
+          <thead>
+            <tr>
+              <th>Pos</th>
+              <th class="izquierda">Equipo</th>
+              <th>Pts</th>
+              <th>PJ</th>
+              <th>GF</th>
+              <th>GC</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let equipo of clasificacion; let i = index" (click)="verDetalleEquipo(equipo.teamName)">
+              <td class="centro posicion">{{ i + 1 }}</td>
+              <td class="izquierda nombre-equipo">
+                <img [src]="obtenerEscudo(equipo.teamName)" class="escudo-mini" onerror="this.src='assets/icon/favicon.png'">
+                <span>{{ equipo.teamName }}</span>
+              </td>
+              <td class="centro puntos-destacados">{{ equipo.points }}</td>
+              <td class="centro">{{ equipo.matchesPlayed }}</td>
+              <td class="centro">{{ equipo.goalsFor }}</td>
+              <td class="centro">{{ equipo.goalsAgainst }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </ion-card>
   </div>
 </ion-content>

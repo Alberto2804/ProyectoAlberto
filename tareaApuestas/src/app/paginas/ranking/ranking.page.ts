@@ -2,7 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { IonicModule } from '@ionic/angular';
 import { FutbolService } from '../../servicios/futbol';
-import { Usuario } from '../../modelos/interfaces';
 
 @Component({
   selector: 'app-ranking',
@@ -12,8 +11,7 @@ import { Usuario } from '../../modelos/interfaces';
   imports: [IonicModule, CommonModule]
 })
 export class RankingPage implements OnInit {
-  usuarios: Usuario[] = [];
-  cargando = true;
+  usuarios: any[] = [];
 
   constructor(private futbolService: FutbolService) { }
 
@@ -22,31 +20,10 @@ export class RankingPage implements OnInit {
   }
 
   ionViewWillEnter() {
-    this.cargarRanking(false);
+    this.cargarRanking();
   }
 
-  cargarRanking(mostrarCarga = true) {
-    if (mostrarCarga) this.cargando = true;
-
-    this.futbolService.getRanking().subscribe({
-      next: (data) => {
-        this.usuarios = data;
-        this.cargando = false;
-      },
-      error: (err) => {
-        console.error('Error cargando el ranking', err);
-        this.cargando = false;
-      }
-    });
-  }
-
-  recargarManual(event: any) {
-    this.futbolService.getRanking().subscribe({
-      next: (data) => {
-        this.usuarios = data;
-        event.target.complete();
-      },
-      error: () => event.target.complete()
-    });
+  cargarRanking() {
+    this.futbolService.getRanking().subscribe(data => this.usuarios = data);
   }
 }

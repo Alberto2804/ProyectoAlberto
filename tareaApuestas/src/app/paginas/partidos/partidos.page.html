@@ -1,62 +1,69 @@
 <ion-header class="ion-no-border">
-  <ion-toolbar color="primary">
-    <ion-title>Jornada Actual</ion-title>
+  <ion-toolbar class="cabecera-oscura">
+    <ion-title>
+      <div class="saludo-usuario">
+        <span class="bienvenido">Bienvenido,</span>
+        <span class="nombre">{{ usuario?.username || 'Cargando...' }}</span>
+      </div>
+    </ion-title>
+    <ion-buttons slot="end">
+      <div class="contenedor-puntos">
+        <span class="puntos">{{ usuario?.points || 0 }} pts</span>
+        <ion-icon name="trophy" class="icono-moneda"></ion-icon>
+      </div>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
-<ion-content color="light">
-  <ion-refresher slot="fixed" (ionRefresh)="recargarManual($event)">
-    <ion-refresher-content></ion-refresher-content>
-  </ion-refresher>
-
-  <div class="loading-container" *ngIf="cargando">
-    <ion-spinner name="bubbles" color="primary"></ion-spinner>
-    <p>Conectando con el estadio...</p>
-  </div>
-
-  <div class="matches-container" *ngIf="!cargando">
+<ion-content class="fondo-app">
+  <div class="contenedor-principal">
     
-    <div class="empty-state" *ngIf="partidos.length === 0">
-      <ion-icon name="calendar-clear-outline"></ion-icon>
-      <p>No hay partidos programados</p>
-    </div>
+    <h1 class="titulo-seccion">Partidos de la Jornada</h1>
 
-    <ion-card *ngFor="let partido of partidos" class="match-card" [routerLink]="['/detalle-partido', partido.id]">
+    <ion-card class="tarjeta-partido" *ngFor="let partido of partidos" (click)="irDetallePartido(partido.id)">
       
-      <div class="match-header">
-        <ion-badge color="warning" *ngIf="partido.status === 'pending'">Pendiente</ion-badge>
-        <ion-badge color="danger" class="live-badge" *ngIf="partido.status === 'live'">
-          <span class="pulse-dot"></span> EN VIVO {{ partido.minute }}'
-        </ion-badge>
-        <ion-badge color="medium" *ngIf="partido.status === 'finished'">Finalizado</ion-badge>
+      <div class="cabecera-partido">
+        <span class="estado-badge" [ngClass]="partido.status">
+          <ion-icon name="ellipse" class="pulso" *ngIf="partido.status === 'live'"></ion-icon>
+          {{ partido.status === 'live' ? 'EN JUEGO' : partido.status === 'finished' ? 'FINALIZADO' : 'PENDIENTE' }}
+        </span>
       </div>
 
-      <div class="match-body">
-        
-        <div class="team">
-          <img [src]="'assets/escudos/' + formatearEscudo(partido.homeTeam) + '.png'" 
-               onerror="this.src='assets/icon/favicon.png'" class="shield" alt="Escudo local">
-          <span class="team-name">{{ partido.homeTeam }}</span>
+      <div class="marcador-contenedor">
+        <div class="equipo">
+          <img [src]="obtenerEscudo(partido.homeTeam)" [alt]="partido.homeTeam" class="escudo" onerror="this.src='assets/icon/favicon.png'">
+          <span class="nombre-equipo">{{ partido.homeTeam }}</span>
         </div>
 
-        <div class="score-container">
-          <span class="score" [class.live-score]="partido.status === 'live'">
-            {{ partido.status === 'pending' ? '-' : partido.homeScore }}
-          </span>
-          <span class="divider">:</span>
-          <span class="score" [class.live-score]="partido.status === 'live'">
-            {{ partido.status === 'pending' ? '-' : partido.awayScore }}
-          </span>
+        <div class="marcador">
+          <ng-container *ngIf="partido.status !== 'pending'; else modoPendiente">
+            <span class="goles">{{ partido.homeScore }}</span>
+            <span class="separador">-</span>
+            <span class="goles">{{ partido.awayScore }}</span>
+          </ng-container>
+          <ng-template #modoPendiente>
+            <span class="vs">VS</span>
+          </ng-template>
         </div>
 
-        <div class="team">
-          <img [src]="'assets/escudos/' + formatearEscudo(partido.awayTeam) + '.png'" 
-               onerror="this.src='assets/icon/favicon.png'" class="shield" alt="Escudo visitante">
-          <span class="team-name">{{ partido.awayTeam }}</span>
+        <div class="equipo">
+          <img [src]="obtenerEscudo(partido.awayTeam)" [alt]="partido.awayTeam" class="escudo" onerror="this.src='assets/icon/favicon.png'">
+          <span class="nombre-equipo">{{ partido.awayTeam }}</span>
         </div>
-
       </div>
+
+      <div class="pie-partido">
+        <span *ngIf="partido.status === 'live'" class="texto-minuto">Minuto: {{ partido.minute }}'</span>
+        <span *ngIf="partido.status === 'pending'" class="texto-minuto">Alineaciones confirmadas</span>
+        <span *ngIf="partido.status === 'finished'" class="texto-minuto">Partido concluido</span>
+      </div>
+
     </ion-card>
+
+    <div class="cargando-vacio" *ngIf="partidos.length === 0">
+      <ion-spinner name="crescent"></ion-spinner>
+      <p>Cargando jornada...</p>
+    </div>
 
   </div>
 </ion-content>
